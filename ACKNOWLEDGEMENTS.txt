@@ -1,0 +1,6 @@
+
+I would like to express my gratitude to Rex van der Spuy for his game framework, Hexi which I used in this game. It is open-source software, and also a delight. To find out more about Hexi and to help contribute, visit https://github.com/kittykatattack/hexi
+
+-JC
+
+
