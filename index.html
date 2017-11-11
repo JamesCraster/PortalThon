@@ -1,0 +1,43 @@
+<!doctype html>
+<meta charset="utf-8">
+<head>
+  <style>
+  @font-face {
+	   font-family: arcade;
+	   src: url('PressStart2P.ttf');
+  }
+  div {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+     user-select: none;
+     font-family: arcade;
+     font-style: normal;
+     font-size: 38px;
+     font-weight: normal;
+     font-variant: normal;
+   }
+  </style>
+</head>
+<title>PortalSnake</title>
+<body>
+  <div class="mid" id="PauseDiv" style="DISPLAY: none; background:black; width:512px;
+      height:256px; left:0px; top:0px; position:absolute" >
+      <p style="color:red;left:142px;top:20px;position:absolute">Paused</p>
+      <p id="resumeText" style="color:white;font-size:15px;left:73px;top:175px;position:absolute;">Click anywhere to resume</p>
+  </div>
+  <div class="mid" id="MenuDiv" style="DISPLAY: none; background:black; width:512px;
+      height:256px; left:0px; top:0px; position:absolute" >
+      <p style="color:green;left:60px;top:20px;position:absolute">PORTALTHON</p>
+      <p id="menuText" style="color:white;font-size:15px;left:73px;top:175px;position:absolute">Click anywhere to start</p>
+  </div>
+  <script>
+    div = document.getElementById('PauseDiv');
+    menuDiv = document.getElementById('MenuDiv');
+    document.body.style.background = "white"
+  </script>
+  <script src="hexi.min.js"></script>
+  <script src="init.js"></script>
+  <script src="main.js"></script>
+</body>
