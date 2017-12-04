@@ -7,6 +7,7 @@ canvas.style.top = "0px";
 canvas.style.position = "absolute";
 canvas.width = 0;
 canvas.height = 0;
+
 g.fps = 60;
 g.smoothie.interpolate = false;
 menuDiv.style.display='block';
@@ -16,7 +17,7 @@ var doNothingClock = 0;
 var initialTime = Date.now();
 g.start();
 g.backgroundColor = "black";
-document.addEventListener("mousedown", function(){menuDiv.style.display = 'none'; g.state = pause;});
+document.addEventListener("mousedown", function(){menuDiv.style.display = 'none'; g.state = pause; /*canvas.mozRequestFullScreen()*/});
 const playerSpeed = tileSize;
 var portals = [];
 var portals2 = [];
