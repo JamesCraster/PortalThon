@@ -86,6 +86,9 @@ class Controller{
       this._input[i] = 0;
     }
   }
+  deregisterInput(control){
+    this._input[control] = 0;
+  }
   registerInput(control){
     this._input[control] = 1;
   }
@@ -227,6 +230,20 @@ class Snake{
       this._vx = 1;
       this._vy = 0;
       this._head._sprite.show(0);
+    }
+  }
+  get direction(){
+    if(this._vx == 1){
+      return Direction.right;
+    }
+    if(this._vx == -1){
+      return Direction.left;
+    }
+    if(this._vy == 1){
+      return Direction.down;
+    }
+    if(this._vy == -1){
+      return Direction.up;
     }
   }
 }

@@ -18,15 +18,19 @@ var rightArrow = g.keyboard(68);
 var downArrow = g.keyboard(83);
 leftArrow.press = () =>{
   controller.registerInput(Controls.left);
+  controller.deregisterInput(Controls.right);
 }
 rightArrow.press = () =>{
   controller.registerInput(Controls.right);
+  controller.deregisterInput(Controls.left);
 }
 upArrow.press = () =>{
   controller.registerInput(Controls.up);
+  controller.deregisterInput(Controls.down);
 }
 downArrow.press = () =>{
   controller.registerInput(Controls.down);
+  controller.deregisterInput(Controls.up);
 }
 
 function load(){
