@@ -8,11 +8,48 @@ g.backgroundColor = "black";
 g.fps = 60;
 g.smoothie.interpolate = false;
 g.start();
+
+//enum class for snake directions
 const Direction = {
   up:"up",
   left:"left",
   right:"right",
   down:"down"
+}
+//enum class for controls
+const Controls = {
+  up:0,
+  down:1,
+  left:2,
+  right:3
+}
+/*class receives key presses in real time, but outputs them once a frame, to avoid a keypress
+occurring during the logical evaluation.*/
+class Controller{
+  constructor(number){
+    this._input = [];
+    this._output = [];
+    for(var i = 0; i < number; i++){
+      this._input.push(0);
+      this._output.push(0);
+    }
+  } 
+  //to be called once per frame
+  update(){
+    for(var i = 0; i < this._output.length; i++){
+      this._output[i] = this._input[i];
+    }
+    //clear all inputs
+    for(var i = 0; i < this._input.length; i++){
+      this._input[i] = 0;
+    }
+  }
+  registerInput(control){
+    this._input[control] = 1;
+  }
+  getOutput(control){
+    return this._output[control];
+  }
 }
 class Rectangle extends Tile{
   constructor(x,y,type,width,height, color){
@@ -111,9 +148,12 @@ class Snake{
     this._vy = 0;
   }
   move(){
+    //move last segment to head and make visible
     this._body[this._body.length - 1].put(this._head);
     this._body[this._body.length - 1]._rectangle.visible = true;
+    //move head in direction
     this._head.put(this._head.position.x + this._vx * tileWidth, this._head.position.y + this._vy * tileHeight);
+    //make the last segment the first
     this._body = [""].concat(this._body);
     this._body[0] = this._body.pop();
   }
@@ -156,22 +196,23 @@ class Level{
 }
 
 var snake = new Snake(0,0,20);
+var controller = new Controller(4);
 var framecount = 0;
 var leftArrow = g.keyboard(65);
 var upArrow = g.keyboard(87);
 var rightArrow = g.keyboard(68);
 var downArrow = g.keyboard(83);
 leftArrow.press = () =>{
-  snake.face(Direction.left);
+  controller.registerInput(Controls.left);
 }
 rightArrow.press = () =>{
-  snake.face(Direction.right);
+  controller.registerInput(Controls.right);
 }
 upArrow.press = () =>{
-  snake.face(Direction.up);
+  controller.registerInput(Controls.up);
 }
 downArrow.press = () =>{
-  snake.face(Direction.down);
+  controller.registerInput(Controls.down);
 }
 
 function load(){
@@ -183,6 +224,19 @@ function setup(){
 
 function play(){
   if(framecount % 13 == 0){
+    controller.update();
+    if(controller.getOutput(Controls.up)){
+      snake.face(Direction.up);
+    }
+    if(controller.getOutput(Controls.right)){
+      snake.face(Direction.right);
+    }
+    if(controller.getOutput(Controls.down)){
+      snake.face(Direction.down);
+    }
+    if(controller.getOutput(Controls.left)){
+      snake.face(Direction.left);
+    }
     snake.move();
   }
   framecount ++;
