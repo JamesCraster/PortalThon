@@ -56,7 +56,8 @@ const Direction = {
   up:"up",
   left:"left",
   right:"right",
-  down:"down"
+  down:"down",
+  none:"none"
 }
 //enum class for controls
 const Controls = {

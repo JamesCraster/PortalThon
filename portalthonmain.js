@@ -39,22 +39,28 @@ function setup(){
   g.state = play;
 
 }
-
+var inputs;
 function play(){
   if(framecount % 13 == 0){
     controller.update();
+    inputs = [Direction.none,Direction.none];
     if(controller.getOutput(Controls.up)){
+      inputs[1] = Direction.up;
       snake.face(Direction.up);
     }
     if(controller.getOutput(Controls.right)){
+      inputs[0] = Direction.right;
       snake.face(Direction.right);
     }
     if(controller.getOutput(Controls.down)){
+      inputs[1] = Direction.down;
       snake.face(Direction.down);
     }
     if(controller.getOutput(Controls.left)){
+      inputs[0] = Direction.left;
       snake.face(Direction.left);
     }
+    console.log(inputs);
     snake.move();
   }
   framecount ++;
