@@ -51,7 +51,7 @@ class Tile{
 
 }
 
-//enum class for snake directions
+//enum for snake directions
 const Direction = {
   up:"up",
   left:"left",
@@ -59,6 +59,21 @@ const Direction = {
   down:"down",
   none:"none"
 }
+Direction.opposite = function(direction){
+  if(direction == Direction.up){
+    return Direction.down;
+  }
+  if(direction == Direction.down){
+    return Direction.up;
+  }
+  if(direction == Direction.left){
+    return Direction.right;
+  }
+  if(direction == Direction.right){
+    return Direction.left;
+  }
+}
+
 //enum class for controls
 const Controls = {
   up:0,
@@ -178,6 +193,7 @@ class Pellet extends Rectangle{
 
 class Snake{
   constructor(x,y, length){
+    this._previousDirection;
     this._body = [];
     this._initialPoolSize = 30;
     for(var i = 0; i < length; i++){
@@ -211,27 +227,31 @@ class Snake{
       this._body[this._body.length - 1].put(this._body[this._body.length - 2]);
     }
   }
-  face(direction){
-    if(direction == Direction.up){
+  face(toFace){
+    this._previousDirection = this.direction;
+    if(toFace == Direction.up){
       this._vx = 0;
       this._vy = -1;
       this._head._sprite.show(3);
     }
-    if(direction == Direction.left){
+    if(toFace == Direction.left){
       this._vx = -1;
       this._vy = 0;
       this._head._sprite.show(2);
     }
-    if(direction == Direction.down){
+    if(toFace == Direction.down){
       this._vx = 0;
       this._vy = 1;
       this._head._sprite.show(1);
     }
-    if(direction == Direction.right){
+    if(toFace == Direction.right){
       this._vx = 1;
       this._vy = 0;
       this._head._sprite.show(0);
     }
+  }
+  get previousDirection(){
+    return this._previousDirection;
   }
   get direction(){
     if(this._vx == 1){

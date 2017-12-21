@@ -39,28 +39,37 @@ function setup(){
   g.state = play;
 
 }
-var inputs;
+var inputs = [Direction.none, Direction.none];
 function play(){
   if(framecount % 13 == 0){
     controller.update();
-    inputs = [Direction.none,Direction.none];
     if(controller.getOutput(Controls.up)){
       inputs[1] = Direction.up;
-      snake.face(Direction.up);
     }
     if(controller.getOutput(Controls.right)){
       inputs[0] = Direction.right;
-      snake.face(Direction.right);
     }
     if(controller.getOutput(Controls.down)){
       inputs[1] = Direction.down;
-      snake.face(Direction.down);
     }
     if(controller.getOutput(Controls.left)){
       inputs[0] = Direction.left;
-      snake.face(Direction.left);
     }
-    console.log(inputs);
+    if(snake.direction == Direction.right || snake.direction == Direction.left){
+      snake.face(inputs[1]);
+      inputs[1] = Direction.none;
+    }else if(snake.direction == Direction.up || snake.direction == Direction.down){
+      snake.face(inputs[0]);
+      inputs[0] = Direction.none;
+    }
+    if(snake.previousDirection == snake.direction){
+      if(snake.direction == inputs[0] || snake.direction == Direction.opposite(inputs[0])){
+        inputs[0] = Direction.none;
+      }
+      if(snake.direction == inputs[1] || snake.direction == Direction.opposite(inputs[1])){
+        inputs[1] = Direction.none;
+      }
+    }
     snake.move();
   }
   framecount ++;
