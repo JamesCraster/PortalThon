@@ -1,4 +1,18 @@
 "use strict"
+const width = 700;
+const height = 700;
+const tileHeight = 16;
+const tileWidth = 16;
+var g = hexi(width, height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"],load);
+
+
+function load(){
+}
+function setup(){
+  g.state = play;
+
+}
+
 class Point{
   constructor(x,y){
     this._x = x;
@@ -22,17 +36,29 @@ class Point{
   }
 }
 
+class Level{
+  constructor(){
+    this._tilemap = [];
+  }
+  push(tile){
+    this._tilemap.push(tile);
+  }
+}
+
+var gLevel = new Level();
+
 class Tile{
   constructor(x,y,type){
     this._position = new Point(x,y);
     this._anchor = new Point(0,0);
     this._type = type;
+    gLevel.push(this);
   }
   get position(){
     return this._position;
   }
   get type(){
-    return this.type;
+    return this._type;
   }
   _put(){
     //If a Tile or Point has been passed
@@ -50,6 +76,7 @@ class Tile{
   }
 
 }
+
 
 //enum for snake directions
 const Direction = {
@@ -131,6 +158,9 @@ class Rectangle extends Tile{
     }
     this._updateRectanglePosition();
   }
+  get drawable(){
+    return this._rectangle;
+  }
 }
 
 class Sprite extends Tile{
@@ -151,6 +181,9 @@ class Sprite extends Tile{
       super._put(x);
     }
     this._updateSpritePosition();
+  }
+  get drawable(){
+    return this._sprite;
   }
 }
 
@@ -197,12 +230,12 @@ class Snake{
     this._body = [];
     this._initialPoolSize = 30;
     for(var i = 0; i < length; i++){
-      this._body.push(new Segment(x,y));
+      this._body.push(new Segment(-100,-100));
       this._body[this._body.length - 1]._rectangle.visible = false;
     }
     this._pool = [];
     for(var i = 0; i < this._initialPoolSize; i++){
-      this._pool.push(new Segment(x,y));
+      this._pool.push(new Segment(-100,-100));
       this._pool[this._pool.length - 1]._rectangle.visible = false;
     }
     this._head = new Head(x,y);
@@ -250,6 +283,21 @@ class Snake{
       this._head._sprite.show(0);
     }
   }
+  
+  look(){
+    this._head._sprite.position.x += this._vx * tileWidth;
+    this._head._sprite.position.y += this._vy * tileHeight;
+    var collidedWith = [];
+    for(var i = 0; i < gLevel._tilemap.length; i++){
+      if(g.hitTestRectangle(this._head._sprite, gLevel._tilemap[i].drawable)){
+        collidedWith.push(gLevel._tilemap[i].type);
+      }
+    }
+    this._head._sprite.position.x -= this._vx * tileWidth;
+    this._head._sprite.position.y -= this._vy * tileHeight;
+    return collidedWith;
+  }
+
   get previousDirection(){
     return this._previousDirection;
   }
@@ -269,8 +317,3 @@ class Snake{
   }
 }
 
-class Level{
-  constructor(){
-    this._tilemap = [];
-  }
-}

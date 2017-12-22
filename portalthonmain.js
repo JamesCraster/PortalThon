@@ -1,9 +1,4 @@
 "use strict";
-const width = 700;
-const height = 700;
-const tileHeight = 16;
-const tileWidth = 16;
-var g = hexi(width, height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"],load);
 g.backgroundColor = "black";
 g.fps = 60;
 g.smoothie.interpolate = false;
@@ -33,12 +28,6 @@ downArrow.press = () =>{
   controller.deregisterInput(Controls.up);
 }
 
-function load(){
-}
-function setup(){
-  g.state = play;
-
-}
 var inputs = [Direction.none, Direction.none];
 function play(){
   if(framecount % 13 == 0){
@@ -70,6 +59,7 @@ function play(){
         inputs[1] = Direction.none;
       }
     }
+    console.log(snake.look());
     snake.move();
   }
   framecount ++;
