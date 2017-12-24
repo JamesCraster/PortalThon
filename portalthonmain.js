@@ -59,7 +59,10 @@ function play(){
         inputs[1] = Direction.none;
       }
     }
-    console.log(snake.look());
+    var collisions = snake.look();
+    if(collisions.contains("segment")||collisions.contains("wall")){
+      snake.kill();
+    }
     snake.move();
   }
   framecount ++;

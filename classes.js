@@ -37,15 +37,39 @@ class Point{
 }
 
 class Level{
-  constructor(){
-    this._tilemap = [];
+  constructor(tilemap){
+    this._tilemap = tilemap;
   }
   push(tile){
     this._tilemap.push(tile);
   }
+  contains(type){
+    for(var i = 0; i < this._tilemap.length; i++){
+      if(this._tilemap[i].type == type){
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
-var gLevel = new Level();
+class typeList{
+  constructor(){
+    this._list = [];
+  }
+  push(type){
+    this._list.push(type);
+  }
+  contains(type){
+    for(var i = 0; i < this._list.length; i++){
+      if(this._list[i] == type){
+        return true;
+      }
+    }
+    return false;
+  }
+}
+var gLevel = new Level([]);
 
 class Tile{
   constructor(x,y,type){
@@ -287,7 +311,7 @@ class Snake{
   look(){
     this._head._sprite.position.x += this._vx * tileWidth;
     this._head._sprite.position.y += this._vy * tileHeight;
-    var collidedWith = [];
+    var collidedWith = new typeList();
     for(var i = 0; i < gLevel._tilemap.length; i++){
       if(g.hitTestRectangle(this._head._sprite, gLevel._tilemap[i].drawable)){
         collidedWith.push(gLevel._tilemap[i].type);
@@ -297,7 +321,12 @@ class Snake{
     this._head._sprite.position.y -= this._vy * tileHeight;
     return collidedWith;
   }
-
+  put(x,y){
+    this._head.put(x,y);
+  }
+  kill(){
+    this.put(0,0);
+  }
   get previousDirection(){
     return this._previousDirection;
   }
