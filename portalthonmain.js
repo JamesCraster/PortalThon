@@ -62,6 +62,7 @@ function play(){
     var collisions = snake.look();
     if(collisions.contains("segment")||collisions.contains("wall")){
       snake.kill();
+      snake.respawn(20);
     }
     snake.move();
   }

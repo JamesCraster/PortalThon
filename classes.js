@@ -284,6 +284,14 @@ class Snake{
       this._body[this._body.length - 1].put(this._body[this._body.length - 2]);
     }
   }
+  clearSegments(){
+    var length = this._body.length;
+    for(var i = 0; i < length; i++){
+      this._body[this._body.length - 1]._rectangle.visible = false;
+      this._body[this._body.length - 1].put(-100,-100);
+      this._pool.push(this._body.pop());
+    }
+  }
   face(toFace){
     this._previousDirection = this.direction;
     if(toFace == Direction.up){
@@ -325,7 +333,16 @@ class Snake{
     this._head.put(x,y);
   }
   kill(){
+    this.put(-100,-100);
+    this._vx = 0;
+    this._vy = 0;
+    this.clearSegments()
+  }
+  respawn(segments){
     this.put(0,0);
+    this.face(Direction.right);
+    this.addSegment(segments);
+
   }
   get previousDirection(){
     return this._previousDirection;
