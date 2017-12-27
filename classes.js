@@ -153,14 +153,23 @@ class Controller{
       this._input[i] = 0;
     }
   }
+  //clear one input
   deregisterInput(control){
     this._input[control] = 0;
   }
+  //enter an input
   registerInput(control){
     this._input[control] = 1;
   }
+  //receive output
   getOutput(control){
     return this._output[control];
+  }
+  clearAll(){
+    for(var i = 0; i < this._input.length; i++){
+      this._input[i] = 0;
+      this._output[i] = 0
+    }
   }
 }
 class Rectangle extends Tile{
@@ -250,13 +259,16 @@ class Pellet extends Rectangle{
 
 class Snake{
   constructor(x,y, length){
+    this._alive = true;
     this._previousDirection;
     this._body = [];
     this._initialPoolSize = 30;
+    //add length segments to the body
     for(var i = 0; i < length; i++){
       this._body.push(new Segment(-100,-100));
       this._body[this._body.length - 1]._rectangle.visible = false;
     }
+    //add initalPoolSize many segments to the pool
     this._pool = [];
     for(var i = 0; i < this._initialPoolSize; i++){
       this._pool.push(new Segment(-100,-100));
@@ -265,6 +277,9 @@ class Snake{
     this._head = new Head(x,y);
     this._vx = 1;
     this._vy = 0;
+  }
+  get alive(){
+    return this._alive;
   }
   move(){
     //move last segment to head and make visible
@@ -294,6 +309,7 @@ class Snake{
   }
   face(toFace){
     this._previousDirection = this.direction;
+    //pick velocity and rotate the head in the desired direction
     if(toFace == Direction.up){
       this._vx = 0;
       this._vy = -1;
@@ -315,7 +331,7 @@ class Snake{
       this._head._sprite.show(0);
     }
   }
-  
+  //returns all the tiles 1 tile infront of the snake (including the head of the snake itself)
   look(){
     this._head._sprite.position.x += this._vx * tileWidth;
     this._head._sprite.position.y += this._vy * tileHeight;
@@ -337,12 +353,13 @@ class Snake{
     this._vx = 0;
     this._vy = 0;
     this.clearSegments()
+    this._alive = false;
   }
-  respawn(segments){
-    this.put(0,0);
+  respawn(x,y,segments){
+    this.put(x,y);
     this.face(Direction.right);
     this.addSegment(segments);
-
+    this._alive = true;
   }
   get previousDirection(){
     return this._previousDirection;
@@ -360,6 +377,69 @@ class Snake{
     if(this._vy == -1){
       return Direction.up;
     }
+  }
+}
+
+class Player{
+  constructor(x,y,length){
+    this._score = 0;
+    this.controller = new Controller(4);
+    this._snake = new Snake(x,y,length);
+    this._inputs = [Direction.none, Direction.none];
+  }
+  kill(){
+    this._score = 0;
+    this._inputs = [Direction.none, Direction.none];
+    this.controller.clearAll();
+    this._snake.kill();
+    this._snake.respawn(0,0,3);    
+  }
+  get score(){
+    return this._score;
+  }
+  clearScore(){
+    this._score = 0;
+  }
+  incrementScore(){
+    this._score ++;
+  }
+  performLogic(){
+    this.controller.update();
+    if(this.controller.getOutput(Controls.up)){
+      this._inputs[1] = Direction.up;
+    }
+    if(this.controller.getOutput(Controls.right)){
+      this._inputs[0] = Direction.right;
+    }
+    if(this.controller.getOutput(Controls.down)){
+      this._inputs[1] = Direction.down;
+    }
+    if(this.controller.getOutput(Controls.left)){
+      this._inputs[0] = Direction.left;
+    }
+    if(this._snake.alive){
+      if(this._snake.direction == Direction.right || this._snake.direction == Direction.left){
+        this._snake.face(this._inputs[1]);
+        this._inputs[1] = Direction.none;
+      }else if(this._snake.direction == Direction.up || this._snake.direction == Direction.down){
+        this._snake.face(this._inputs[0]);
+        this._inputs[0] = Direction.none;
+      }
+      if(this._snake.previousDirection == this._snake.direction){
+        if(this._snake.direction == this._inputs[0] || this._snake.direction == Direction.opposite(this._inputs[0])){
+          this._inputs[0] = Direction.none;
+        }
+        if(this._snake.direction == this._inputs[1] || this._snake.direction == Direction.opposite(this._inputs[1])){
+          this._inputs[1] = Direction.none;
+        }
+      }
+      var collisions = this._snake.look();
+      if(collisions.contains("segment")||collisions.contains("wall")){
+        this.kill();
+      }else{
+        this._snake.move();
+      }
+  }
   }
 }
 
