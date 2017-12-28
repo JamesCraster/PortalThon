@@ -382,13 +382,17 @@ class Snake{
 
 class Player{
   constructor(x,y,length){
+    //40px produces no blur
+    //32px also produces no blur
+    this._scoreText = g.text("Score:0","32px PressStart2P","red");
+    this._scoreText.resolution = 1;
     this._score = 0;
     this.controller = new Controller(4);
     this._snake = new Snake(x,y,length);
     this._inputs = [Direction.none, Direction.none];
   }
   kill(){
-    this._score = 0;
+    this.clearScore();
     this._inputs = [Direction.none, Direction.none];
     this.controller.clearAll();
     this._snake.kill();
@@ -397,11 +401,16 @@ class Player{
   get score(){
     return this._score;
   }
+  _setScoreText(string){
+    this._scoreText.text = "Score:" + string;
+  }
   clearScore(){
     this._score = 0;
+    this._setScoreText(this._score.toString());
   }
   incrementScore(){
     this._score ++;
+    this._setScoreText(this._score.toString());
   }
   performLogic(){
     this.controller.update();
@@ -434,6 +443,9 @@ class Player{
         }
       }
       var collisions = this._snake.look();
+      if(collisions.contains("pellet")){
+        this.incrementScore();
+      }
       if(collisions.contains("segment")||collisions.contains("wall")){
         this.kill();
       }else{
