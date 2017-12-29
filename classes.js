@@ -8,10 +8,7 @@ var g = hexi(width, height, setup, ["Fonts/PressStart2P.ttf", "player.png", "pla
 
 function load(){
 }
-function setup(){
-  g.state = play;
 
-}
 
 class Point{
   constructor(x,y){
@@ -193,6 +190,20 @@ class Rectangle extends Tile{
   }
   get drawable(){
     return this._rectangle;
+  }
+  kill(){
+    this.put(-100,-100);
+    this._rectangle.visible = false;
+  }
+  collidesWithPlayer(){
+    for(var i = 0; i < gLevel._tilemap.length; i++){
+      if(g.hitTestRectangle(this.drawable, gLevel._tilemap[i].drawable)){
+        if(gLevel._tilemap[i].type == "head"){
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
 
@@ -378,14 +389,15 @@ class Snake{
       return Direction.up;
     }
   }
+  get position(){
+    return this._head.position;
+  }
 }
 
 class Player{
   constructor(x,y,length){
     //40px produces no blur
     //32px also produces no blur
-    this._scoreText = g.text("Score:0","32px PressStart2P","red");
-    this._scoreText.resolution = 1;
     this._score = 0;
     this.controller = new Controller(4);
     this._snake = new Snake(x,y,length);
@@ -445,13 +457,31 @@ class Player{
       var collisions = this._snake.look();
       if(collisions.contains("pellet")){
         this.incrementScore();
+        this._snake.addSegment(3);
       }
       if(collisions.contains("segment")||collisions.contains("wall")){
         this.kill();
       }else{
         this._snake.move();
       }
+      if(this._snake.position.x >=  width){
+        this._snake.put(0,this._snake.position.y);
+      }else if(this._snake.position.x < 0){
+        this._snake.put(width - tileWidth, this._snake.position.y);
+      }else if(this._snake.position.y < 0){
+        this._snake.put(this._snake.position.x, height - tileHeight);
+      }else if(this._snake.position.y >= height){
+        this._snake.put(this._snake.position.x, 0);
+      }
   }
   }
 }
 
+
+var player = new Player(0,0,2);
+
+function setup(){
+  g.state = play;
+  player._scoreText = g.text("Score:0","32px PressStart2P","red");
+  player._scoreText.resolution = 1;
+}

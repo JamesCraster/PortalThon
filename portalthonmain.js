@@ -4,7 +4,7 @@ g.fps = 60;
 g.smoothie.interpolate = false;
 g.start();
 
-var player = new Player(0,0,2);
+
 var framecount = 0;
 var leftArrow = g.keyboard(65);
 var upArrow = g.keyboard(87);
@@ -26,13 +26,16 @@ downArrow.press = () =>{
   player.controller.registerInput(Controls.down);
   player.controller.deregisterInput(Controls.up);
 }
-
+var pellet = new Pellet(10 * tileWidth, 5 * tileHeight);
 function reset(){
 
 }
 function play(){
   if(framecount % 13 == 0){
    player.performLogic();
+  }
+  if(pellet.collidesWithPlayer()){
+    pellet.kill();
   }
   framecount ++;
 }
