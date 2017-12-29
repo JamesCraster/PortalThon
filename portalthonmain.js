@@ -36,6 +36,7 @@ function play(){
   }
   if(pellet.collidesWithPlayer()){
     pellet.kill();
+    pellet.respawn();
   }
   framecount ++;
 }

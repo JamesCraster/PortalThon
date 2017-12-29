@@ -6,7 +6,14 @@ const tileHeight = 16;
 const tileWidth = 16;
 var g = hexi(width, height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
 
-
+class Utils{
+  static snapXToGrid(x){
+    return Math.floor(x/tileWidth)*tileWidth;
+  }
+  static snapYToGrid(y){
+    return Math.floor(y/tileHeight)*tileHeight;
+  }
+}
 class Point{
   constructor(x,y){
     this._x = x;
@@ -263,6 +270,10 @@ class Pellet extends Rectangle{
   constructor(x,y){
     super(x,y,"pellet",tileWidth, tileHeight, "yellow");
   }
+  respawn(){
+    pellet.drawable.visible = true;
+    pellet.put(Utils.snapXToGrid(Math.random() * (width - tileWidth)),Utils.snapYToGrid(Math.floor(Math.random() * (height - tileHeight))));
+  }
 }
 
 class Snake{
@@ -461,6 +472,7 @@ class Player{
       }else{
         this._snake.move();
       }
+      //make snake wrap around edges of screen
       if(this._snake.position.x >=  width){
         this._snake.put(0,this._snake.position.y);
       }else if(this._snake.position.x < 0){
