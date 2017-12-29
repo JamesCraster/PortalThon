@@ -1,0 +1,13 @@
+
+BUGS:
+
+player sometimes is not exactly on a tile at the bottom/bottom right of the screen. FIXED: play space wasn't of form 16m * 16n
+have to leave one dark frame before scoretext is defined and appears
+
+
+Features:
+
+make top bar around scoreText so that player cannot overun it
+make pool resizeable in the event the pool is not large enough
+make pellet spawn randomly in play area(define 'play area' rigorously)
+

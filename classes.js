@@ -1,13 +1,10 @@
 "use strict"
-const width = 700;
-const height = 700;
+//pick dimensions divisible by 16
+const width = 70 * 8;
+const height = 70 * 8;
 const tileHeight = 16;
 const tileWidth = 16;
-var g = hexi(width, height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"],load);
-
-
-function load(){
-}
+var g = hexi(width, height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
 
 
 class Point{
