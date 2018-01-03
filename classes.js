@@ -53,7 +53,7 @@ class Level{
     return false;
   }
 }
-
+//used for collisions to look up if have collided with certain type of tile
 class typeList{
   constructor(){
     this._list = [];
@@ -166,6 +166,7 @@ class Controller{
   getOutput(control){
     return this._output[control];
   }
+  //clear all inputs and outputs
   clearAll(){
     for(var i = 0; i < this._input.length; i++){
       this._input[i] = 0;
@@ -180,6 +181,8 @@ class Rectangle extends Tile{
     this._rectangle.position.x = x;
     this._rectangle.position.y = y;
   }
+  //moves rectangle (the drawable that is visible to the player) into the position
+  //dictated by the logic
   _updateRectanglePosition(){
     this._rectangle.position.x = this.position.x;
     this._rectangle.position.y = this.position.y;
@@ -218,6 +221,8 @@ class Sprite extends Tile{
     this._sprite.position.x = x;
     this._sprite.position.y = y;
   }
+  //moves sprite (the drawable that is visible to the player) into the position
+  //dictated by the logic
   _updateSpritePosition(){
     this._sprite.position.x = this.position.x;
     this._sprite.position.y = this.position.y;
@@ -272,6 +277,7 @@ class Pellet extends Rectangle{
   }
   respawn(){
     pellet.drawable.visible = true;
+    //place pellet within play area
     pellet.put(Utils.snapXToGrid(Math.random() * (width - tileWidth)),Utils.snapYToGrid(Math.floor(Math.random() * (height - tileHeight))));
   }
 }
@@ -318,10 +324,12 @@ class Snake{
       this._body[this._body.length - 1].put(this._body[this._body.length - 2]);
     }
   }
+  //move all segments back into the pool
   clearSegments(){
     var length = this._body.length;
     for(var i = 0; i < length; i++){
       this._body[this._body.length - 1]._rectangle.visible = false;
+      //move segments to the 'garbage' position of -100,-100
       this._body[this._body.length - 1].put(-100,-100);
       this._pool.push(this._body.pop());
     }
@@ -352,6 +360,7 @@ class Snake{
   }
   //returns all the tiles 1 tile infront of the snake (including the head of the snake itself)
   look(){
+    //move head forwards by 1 tile
     this._head._sprite.position.x += this._vx * tileWidth;
     this._head._sprite.position.y += this._vy * tileHeight;
     var collidedWith = new typeList();
@@ -360,6 +369,7 @@ class Snake{
         collidedWith.push(gLevel._tilemap[i].type);
       }
     }
+    //move head backwards by 1 tile to return it to original position
     this._head._sprite.position.x -= this._vx * tileWidth;
     this._head._sprite.position.y -= this._vy * tileHeight;
     return collidedWith;
@@ -447,6 +457,7 @@ class Player{
       this._inputs[0] = Direction.left;
     }
     if(this._snake.alive){
+      //deal with multiple inputs at a time, for example [right, down]
       if(this._snake.direction == Direction.right || this._snake.direction == Direction.left){
         this._snake.face(this._inputs[1]);
         this._inputs[1] = Direction.none;
@@ -454,6 +465,7 @@ class Player{
         this._snake.face(this._inputs[0]);
         this._inputs[0] = Direction.none;
       }
+      //get rid of second input if it has been around for more than one move.
       if(this._snake.previousDirection == this._snake.direction){
         if(this._snake.direction == this._inputs[0] || this._snake.direction == Direction.opposite(this._inputs[0])){
           this._inputs[0] = Direction.none;
@@ -463,6 +475,7 @@ class Player{
         }
       }
       var collisions = this._snake.look();
+      //collision logic:
       if(collisions.contains("pellet")){
         this.incrementScore();
         this._snake.addSegment(3);
@@ -472,7 +485,7 @@ class Player{
       }else{
         this._snake.move();
       }
-      //make snake wrap around edges of screen
+      //make snake wrap around edges of play space
       if(this._snake.position.x >=  width){
         this._snake.put(0,this._snake.position.y);
       }else if(this._snake.position.x < 0){
@@ -488,9 +501,9 @@ class Player{
 
 
 var player = new Player(0,0,2);
-
 function setup(){
   g.state = play;
+  //define scoreText here as it sometimes does not appear otherwise: bug?
   player._scoreText = g.text("Score:0","32px PressStart2P","red");
   player._scoreText.resolution = 1;
 }
