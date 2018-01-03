@@ -27,6 +27,9 @@ downArrow.press = () =>{
   player.controller.deregisterInput(Controls.up);
 }
 var pellet = new Pellet(10 * tileWidth, 5 * tileHeight);
+pellet.kill();
+pellet.respawn();
+
 function reset(){
 
 }
