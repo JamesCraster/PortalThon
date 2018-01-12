@@ -1,17 +1,18 @@
 "use strict"
 //pick dimensions divisible by 16
-const width = 70 * 8;
-const height = 70 * 8;
-const tileHeight = 16;
-const tileWidth = 16;
-var g = hexi(width, height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
+var Window;
+Window.width = 70 * 8;
+Window.height = 70 * 8;
+Window.tileHeight = 16;
+Window.tileWidth = 16;
+var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
 
 class Utils{
   static snapXToGrid(x){
-    return Math.floor(x/tileWidth)*tileWidth;
+    return Math.floor(x/Window.tileWidth)*Window.tileWidth;
   }
   static snapYToGrid(y){
-    return Math.floor(y/tileHeight)*tileHeight;
+    return Math.floor(y/Window.tileHeight)*Window.tileHeight;
   }
 }
 class Point{
@@ -34,6 +35,15 @@ class Point{
   _set(point){
     this._x = point.x;
     this._y = point.y;
+  }
+}
+
+class PlaySpace{
+  constructor(top,left,width,height){
+    this.top = top;
+    this.left = left;
+    this.width = width;
+    this.height = height; 
   }
 }
 
@@ -62,11 +72,12 @@ class Level{
 }
 
 class Game{
-  constructor(){
+  constructor(top,left,width,height){
     this.gLevel = new Level([]);
+    this.playSpace = new PlaySpace(top,left,width,height);
   }
 }
-var game = new Game();
+var game = new Game(Window.tileHeight * 3,Window.tileWidth,Window.width-Window.tileWidth * 2,Window.height-(Window.tileHeight * 3) - Window.tileHeight);
 
 class Tile{
   constructor(x,y,type){
@@ -244,19 +255,19 @@ class Head extends Sprite{
 
 class Segment extends Rectangle{
   constructor(x,y){
-    super(x,y,"segment",tileWidth,tileHeight,0x167311);
+    super(x,y,"segment",Window.tileWidth,Window.tileHeight,0x167311);
   }
 }
 
 class Wall extends Rectangle{
   constructor(x,y){
-    super(x,y,"wall",tileWidth,tileHeight,"purple");
+    super(x,y,"wall",Window.tileWidth,Window.tileHeight,"purple");
   }
 }
 
 class Portal extends Rectangle{
   constructor(x,y,color){
-    super(x,y,"portal",tileWidth, tileHeight,color);
+    super(x,y,"portal",Window.tileWidth, Window.tileHeight,color);
     this._pair;
   }
   link(portal){
@@ -269,12 +280,13 @@ class Portal extends Rectangle{
 
 class Pellet extends Rectangle{
   constructor(x,y){
-    super(x,y,"pellet",tileWidth, tileHeight, "yellow");
+    super(x,y,"pellet",Window.tileWidth, Window.tileHeight, "yellow");
   }
   respawn(){
     pellet.drawable.visible = true;
     //place pellet within play area
-    pellet.put(Utils.snapXToGrid(Math.random() * (width - tileWidth)),Utils.snapYToGrid(Math.floor(Math.random() * (height - tileHeight))));
+    pellet.put(Utils.snapXToGrid(Math.floor(Math.random() * (game.playSpace.width - Window.tileWidth))+game.playSpace.left),
+    Utils.snapYToGrid(Math.floor(Math.random() * (game.playSpace.height - Window.tileHeight))+game.playSpace.top));
   }
 }
 
@@ -307,7 +319,7 @@ class Snake{
     this._body[this._body.length - 1].put(this._head);
     this._body[this._body.length - 1]._rectangle.visible = true;
     //move head in direction
-    this._head.put(this._head.position.x + this._vx * tileWidth, this._head.position.y + this._vy * tileHeight);
+    this._head.put(this._head.position.x + this._vx * Window.tileWidth, this._head.position.y + this._vy * Window.tileHeight);
     //make the last segment the first
     this._body = [""].concat(this._body);
     this._body[0] = this._body.pop();
@@ -357,8 +369,8 @@ class Snake{
   //returns all the tiles 1 tile infront of the snake (including the head of the snake itself)
   look(){
     //move head forwards by 1 tile
-    this._head._sprite.position.x += this._vx * tileWidth;
-    this._head._sprite.position.y += this._vy * tileHeight;
+    this._head._sprite.position.x += this._vx * Window.tileWidth;
+    this._head._sprite.position.y += this._vy * Window.tileHeight;
     var collidedWith = new Level([]);
     for(var i = 0; i < game.gLevel._tilemap.length; i++){
       if(g.hitTestRectangle(this._head._sprite, game.gLevel._tilemap[i].drawable)){
@@ -366,8 +378,8 @@ class Snake{
       }
     }
     //move head backwards by 1 tile to return it to original position
-    this._head._sprite.position.x -= this._vx * tileWidth;
-    this._head._sprite.position.y -= this._vy * tileHeight;
+    this._head._sprite.position.x -= this._vx * Window.tileWidth;
+    this._head._sprite.position.y -= this._vy * Window.tileHeight;
     return collidedWith;
   }
   put(x,y){
@@ -422,6 +434,7 @@ class Player{
     this._inputs = [Direction.none, Direction.none];
     this.controller.clearAll();
     this._snake.kill();
+    //these coordinates are wrong!!
     this._snake.respawn(0,0,3);    
   }
   get score(){
@@ -486,27 +499,30 @@ class Player{
       }
       
       //make snake wrap around edges of play space
-      if(this._snake.position.x >=  width){
-        this._snake.put(0,this._snake.position.y);
-      }else if(this._snake.position.x < 0){
-        this._snake.put(width - tileWidth, this._snake.position.y);
-      }else if(this._snake.position.y < 0){
-        this._snake.put(this._snake.position.x, height - tileHeight);
-      }else if(this._snake.position.y >= height){
-        this._snake.put(this._snake.position.x, 0);
+      if(this._snake.position.x >=  game.playSpace.left + game.playSpace.width){
+        this._snake.put(game.playSpace.left,this._snake.position.y);
+      }else if(this._snake.position.x < game.playSpace.left){
+        this._snake.put(game.playSpace.left + game.playSpace.width - Window.tileWidth, this._snake.position.y);
+      }else if(this._snake.position.y < game.playSpace.top){
+        this._snake.put(this._snake.position.x, game.playSpace.top + game.playSpace.height - Window.tileHeight);
+      }else if(this._snake.position.y >= game.playSpace.top + game.playSpace.height){
+        this._snake.put(this._snake.position.x, game.playSpace.top);
       }
   }
   }
 }
 
 
-var player = new Player(0,0,2);
+var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
+Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);
 function setup(){
   g.state = play;
   //define scoreText here as it sometimes does not appear otherwise: bug?
   player._scoreText = g.text("Score:0","32px PressStart2P","red");
   player._scoreText.resolution = 1;
   player._scoreText.x = 10;
-  player._scoreText.y = 5;
-  var line = g.line("red",3,0,tileHeight * 3 - 2,700,tileHeight * 3 - 2);
+  player._scoreText.y = 7;
+  var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);
+  var line = g.line("red",3,game.playSpace.left,game.playSpace.top + game.playSpace.height
+  ,game.playSpace.left + game.playSpace.width, game.playSpace.top + game.playSpace.height);
 }

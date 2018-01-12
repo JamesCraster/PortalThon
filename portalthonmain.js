@@ -26,18 +26,18 @@ downArrow.press = () =>{
   player.controller.registerInput(Controls.down);
   player.controller.deregisterInput(Controls.up);
 }
-var pellet = new Pellet(10 * tileWidth, 5 * tileHeight);
+var pellet = new Pellet(10 * Window.tileWidth, 5 * Window.tileHeight);
 pellet.kill();
 pellet.respawn();
-var portal1 = new Portal(5 * tileWidth, 5 * tileHeight, "magenta");
-var portal2 = new Portal(10 * tileWidth, 10 * tileWidth, "magenta");
+var portal1 = new Portal(5 * Window.tileWidth, 5 * Window.tileHeight, "magenta");
+var portal2 = new Portal(10 * Window.tileWidth, 10 * Window.tileWidth, "magenta");
 portal1.link(portal2);
 portal2.link(portal1);
 function reset(){
 
 }
 function play(){
-  if(framecount % 13 == 0){
+  if(framecount % 12 == 0){
    player.performLogic();
   }
   if(pellet.collidesWithPlayer()){
