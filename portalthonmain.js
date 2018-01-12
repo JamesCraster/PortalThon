@@ -29,7 +29,10 @@ downArrow.press = () =>{
 var pellet = new Pellet(10 * tileWidth, 5 * tileHeight);
 pellet.kill();
 pellet.respawn();
-
+var portal1 = new Portal(5 * tileWidth, 5 * tileHeight, "magenta");
+var portal2 = new Portal(10 * tileWidth, 10 * tileWidth, "magenta");
+portal1.link(portal2);
+portal2.link(portal1);
 function reset(){
 
 }

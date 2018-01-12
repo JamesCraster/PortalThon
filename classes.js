@@ -52,32 +52,28 @@ class Level{
     }
     return false;
   }
-}
-//used for collisions to look up if have collided with certain type of tile
-class typeList{
-  constructor(){
-    this._list = [];
-  }
-  push(type){
-    this._list.push(type);
-  }
-  contains(type){
-    for(var i = 0; i < this._list.length; i++){
-      if(this._list[i] == type){
-        return true;
+  get(type){
+    for(var i = 0; i < this._tilemap.length; i++){
+      if(this._tilemap[i].type == type){
+        return this._tilemap[i];
       }
     }
-    return false;
   }
 }
-var gLevel = new Level([]);
+
+class Game{
+  constructor(){
+    this.gLevel = new Level([]);
+  }
+}
+var game = new Game();
 
 class Tile{
   constructor(x,y,type){
     this._position = new Point(x,y);
     this._anchor = new Point(0,0);
     this._type = type;
-    gLevel.push(this);
+    game.gLevel.push(this);
   }
   get position(){
     return this._position;
@@ -203,9 +199,9 @@ class Rectangle extends Tile{
     this._rectangle.visible = false;
   }
   collidesWithPlayer(){
-    for(var i = 0; i < gLevel._tilemap.length; i++){
-      if(g.hitTestRectangle(this.drawable, gLevel._tilemap[i].drawable)){
-        if(gLevel._tilemap[i].type == "head"){
+    for(var i = 0; i < game.gLevel._tilemap.length; i++){
+      if(g.hitTestRectangle(this.drawable, game.gLevel._tilemap[i].drawable)){
+        if(game.gLevel._tilemap[i].type == "head"){
           return true;
         }
       }
@@ -363,10 +359,10 @@ class Snake{
     //move head forwards by 1 tile
     this._head._sprite.position.x += this._vx * tileWidth;
     this._head._sprite.position.y += this._vy * tileHeight;
-    var collidedWith = new typeList();
-    for(var i = 0; i < gLevel._tilemap.length; i++){
-      if(g.hitTestRectangle(this._head._sprite, gLevel._tilemap[i].drawable)){
-        collidedWith.push(gLevel._tilemap[i].type);
+    var collidedWith = new Level([]);
+    for(var i = 0; i < game.gLevel._tilemap.length; i++){
+      if(g.hitTestRectangle(this._head._sprite, game.gLevel._tilemap[i].drawable)){
+        collidedWith.push(game.gLevel._tilemap[i]);
       }
     }
     //move head backwards by 1 tile to return it to original position
@@ -484,7 +480,11 @@ class Player{
         this.kill();
       }else{
         this._snake.move();
+        if(collisions.contains("portal")){
+          this._snake.put(collisions.get("portal").destination.position);
+        }
       }
+      
       //make snake wrap around edges of play space
       if(this._snake.position.x >=  width){
         this._snake.put(0,this._snake.position.y);
@@ -506,4 +506,7 @@ function setup(){
   //define scoreText here as it sometimes does not appear otherwise: bug?
   player._scoreText = g.text("Score:0","32px PressStart2P","red");
   player._scoreText.resolution = 1;
+  player._scoreText.x = 10;
+  player._scoreText.y = 5;
+  var line = g.line("red",3,0,tileHeight * 3 - 2,700,tileHeight * 3 - 2);
 }
