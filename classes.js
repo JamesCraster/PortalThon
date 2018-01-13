@@ -435,7 +435,8 @@ class Player{
     this.controller.clearAll();
     this._snake.kill();
     //these coordinates are wrong!!
-    this._snake.respawn(0,0,3);    
+    this._snake.respawn(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
+    Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);    
   }
   get score(){
     return this._score;
@@ -520,9 +521,13 @@ function setup(){
   //define scoreText here as it sometimes does not appear otherwise: bug?
   player._scoreText = g.text("Score:0","32px PressStart2P","red");
   player._scoreText.resolution = 1;
-  player._scoreText.x = 10;
+  player._scoreText.x = game.playSpace.left;
   player._scoreText.y = 7;
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top + game.playSpace.height
   ,game.playSpace.left + game.playSpace.width, game.playSpace.top + game.playSpace.height);
+  var line = g.line("red",3,game.playSpace.left,game.playSpace.top-3,game.playSpace.left,game.playSpace.top + game.playSpace.height + 2);
+  var line = g.line("red",3,game.playSpace.left + game.playSpace.width + 2,game.playSpace.top-3
+  ,game.playSpace.left + game.playSpace.width + 2, game.playSpace.top + game.playSpace.height + 2);
+
 }

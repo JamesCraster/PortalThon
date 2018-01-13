@@ -33,16 +33,18 @@ var portal1 = new Portal(5 * Window.tileWidth, 5 * Window.tileHeight, "magenta")
 var portal2 = new Portal(10 * Window.tileWidth, 10 * Window.tileWidth, "magenta");
 portal1.link(portal2);
 portal2.link(portal1);
-function reset(){
+function reset(){0,0,3
 
 }
 function play(){
+  if(document.hasFocus()){
   if(framecount % 12 == 0){
    player.performLogic();
   }
   if(pellet.collidesWithPlayer()){
-    pellet.kill();
+    pellet.kill();0,0,3
     pellet.respawn();
   }
   framecount ++;
+  }
 }
