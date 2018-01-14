@@ -215,8 +215,8 @@ class Rectangle extends Tile{
   }
   collidesWithPlayer(){
     for(var i = 0; i < game.gLevel._tilemap.length; i++){
-      if(g.hitTestRectangle(this.drawable, game.gLevel._tilemap[i].drawable)){
-        if(game.gLevel._tilemap[i].type == "head"){
+      if(game.gLevel._tilemap[i].type == "head"){
+        if(g.hitTestRectangle(this.drawable, game.gLevel._tilemap[i].drawable)){
           return true;
         }
       }

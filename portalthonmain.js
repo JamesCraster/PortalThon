@@ -42,7 +42,7 @@ function play(){
    player.performLogic();
   }
   if(pellet.collidesWithPlayer()){
-    pellet.kill();0,0,3
+    pellet.kill();
     pellet.respawn();
   }
   framecount ++;
