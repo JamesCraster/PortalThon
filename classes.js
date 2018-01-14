@@ -326,6 +326,10 @@ class Snake{
   }
   addSegment(number){
     //move 'number' segments from pool to body
+    while(number > this._pool.length){
+      this._pool.push(new Segment(-100,-100));
+      this._pool[this._pool.length - 1]._rectangle.visible = false;
+    }
     for(var i = 0; i < number; i++){
       this._pool[this._pool.length - 1]._rectangle.visible = true;
       this._body.push(this._pool.pop());
