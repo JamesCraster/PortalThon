@@ -11,6 +11,9 @@ make pool resizeable in the event the pool is not large enough
 make pellet spawn randomly in play area(avoiding segments/heads/portals/pellets)
 make portals work correctly
 make look function wrap around edge of play space.
+make pellets double length
 death animation
 start animation
 pause animation
+new art style
+menu
