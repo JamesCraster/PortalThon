@@ -37,6 +37,9 @@ class Point{
     this._x = point.x;
     this._y = point.y;
   }
+  equals(other){
+    return this.x == other.x && this.y == other.y;
+  }
 }
 
 class PlaySpace{
@@ -378,7 +381,7 @@ class Snake{
     this._head._sprite.position.y += this._vy * Window.tileHeight;
     var collidedWith = new Level([]);
     for(var i = 0; i < game.gLevel._tilemap.length; i++){
-      if(g.hitTestRectangle(this._head._sprite, game.gLevel._tilemap[i].drawable)){
+      if(this._head._sprite.position.equals(game.gLevel._tilemap[i].position)){
         collidedWith.push(game.gLevel._tilemap[i]);
       }
     }
