@@ -7,6 +7,7 @@ Window.tileHeight = 16;
 Window.tileWidth = 16;
 var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
 
+
 class Utils{
   static snapXToGrid(x){
     return Math.floor(x/Window.tileWidth)*Window.tileWidth;
@@ -528,10 +529,10 @@ function setup(){
   player._scoreText.x = game.playSpace.left;
   player._scoreText.y = 7;
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);
-  var line = g.line("red",3,game.playSpace.left,game.playSpace.top + game.playSpace.height
-  ,game.playSpace.left + game.playSpace.width, game.playSpace.top + game.playSpace.height);
-  var line = g.line("red",3,game.playSpace.left,game.playSpace.top-3,game.playSpace.left,game.playSpace.top + game.playSpace.height + 2);
+  var line = g.line("red",3,game.playSpace.left,game.playSpace.top + game.playSpace.height + 1
+  ,game.playSpace.left + game.playSpace.width, game.playSpace.top + game.playSpace.height + 1);
+  var line = g.line("red",3,game.playSpace.left-1,game.playSpace.top-3,game.playSpace.left-1,game.playSpace.top + game.playSpace.height + 3);
   var line = g.line("red",3,game.playSpace.left + game.playSpace.width + 2,game.playSpace.top-3
-  ,game.playSpace.left + game.playSpace.width + 2, game.playSpace.top + game.playSpace.height + 2);
+  ,game.playSpace.left + game.playSpace.width + 2, game.playSpace.top + game.playSpace.height + 3);
 
 }
