@@ -374,11 +374,22 @@ class Snake{
       this._head._sprite.show(0);
     }
   }
+  wrap(){
+    if(this.position.x >=  game.playSpace.left + game.playSpace.width){
+      this.put(game.playSpace.left,this.position.y);
+    }else if(this.position.x < game.playSpace.left){
+      this.put(game.playSpace.left + game.playSpace.width - Window.tileWidth, this.position.y);
+    }else if(this.position.y < game.playSpace.top){
+      this.put(this.position.x, game.playSpace.top + game.playSpace.height - Window.tileHeight);
+    }else if(this.position.y >= game.playSpace.top + game.playSpace.height){
+      this.put(this.position.x, game.playSpace.top);
+    }
+  }
   //returns all the tiles 1 tile infront of the snake (including the head of the snake itself)
   look(){
     //move head forwards by 1 tile
-    this._head._sprite.position.x += this._vx * Window.tileWidth;
-    this._head._sprite.position.y += this._vy * Window.tileHeight;
+    this.translate(this._vx * Window.tileWidth,this._vy * Window.tileHeight);
+    this.wrap();
     var collidedWith = new Level([]);
     for(var i = 0; i < game.gLevel._tilemap.length; i++){
       if(this._head._sprite.position.equals(game.gLevel._tilemap[i].position)){
@@ -386,12 +397,15 @@ class Snake{
       }
     }
     //move head backwards by 1 tile to return it to original position
-    this._head._sprite.position.x -= this._vx * Window.tileWidth;
-    this._head._sprite.position.y -= this._vy * Window.tileHeight;
+    this.translate(-this._vx * Window.tileWidth,-this._vy * Window.tileHeight);
+    this.wrap();
     return collidedWith;
   }
   put(x,y){
     this._head.put(x,y);
+  }
+  translate(x,y){
+    this._head.put(this._head.position.x + x, this._head.position.y + y);
   }
   kill(){
     this.put(-100,-100);
@@ -508,15 +522,7 @@ class Player{
       }
       
       //make snake wrap around edges of play space
-      if(this._snake.position.x >=  game.playSpace.left + game.playSpace.width){
-        this._snake.put(game.playSpace.left,this._snake.position.y);
-      }else if(this._snake.position.x < game.playSpace.left){
-        this._snake.put(game.playSpace.left + game.playSpace.width - Window.tileWidth, this._snake.position.y);
-      }else if(this._snake.position.y < game.playSpace.top){
-        this._snake.put(this._snake.position.x, game.playSpace.top + game.playSpace.height - Window.tileHeight);
-      }else if(this._snake.position.y >= game.playSpace.top + game.playSpace.height){
-        this._snake.put(this._snake.position.x, game.playSpace.top);
-      }
+      this._snake.wrap();
   }
   }
 }
