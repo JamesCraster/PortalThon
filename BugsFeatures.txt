@@ -8,9 +8,9 @@ have to leave one dark frame before scoretext is defined and appears (MANAGEABLE
 Features:
 
 make pool resizeable in the event the pool is not large enough: DONE
-make pellet spawn randomly in play area(avoiding segments/heads/portals/pellets).
-make segments always below portals in the render order.
-make portals work correctly
+make pellet spawn randomly in play area(avoiding segments/heads/portals/pellets). DONE
+make segments always below portals in the render order (Can't do without PIXI rewrite).
+make portals work correctly (Can't do this without PIXI rewrite)
 make look function wrap around edge of play space. DONE
 make pellets double length
 death animation
