@@ -16,5 +16,6 @@ make pellets double length
 death animation
 start animation
 pause animation
-new art style
-menu
+new art style (Priority)
+menu (2nd Priority)
+Pixi rewrite(3rd Priority)
