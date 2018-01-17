@@ -289,8 +289,41 @@ class Pellet extends Rectangle{
   respawn(){
     pellet.drawable.visible = true;
     //place pellet within play area
-    pellet.put(Utils.snapXToGrid(Math.floor(Math.random() * (game.playSpace.width - Window.tileWidth))+game.playSpace.left),
-    Utils.snapYToGrid(Math.floor(Math.random() * (game.playSpace.height - Window.tileHeight))+game.playSpace.top));
+    //pellet.put(Utils.snapXToGrid(Math.floor(Math.random() * (game.playSpace.width - Window.tileWidth))+game.playSpace.left),
+    //Utils.snapYToGrid(Math.floor(Math.random() * (game.playSpace.height - Window.tileHeight))+game.playSpace.top));
+   
+    //list all positions in the playspace and append them to the list
+    var numberOfXChoices = game.playSpace.width/Window.tileWidth;
+    var numberOfYChoices = game.playSpace.height/Window.tileHeight;
+    var choices = [];
+    var validSpawn = 0;
+    for(var x = 0; x < numberOfXChoices; x++){
+      for(var y = 0; y < numberOfYChoices; y++){
+        choices.push([x*Window.tileWidth + game.playSpace.left,y*Window.tileHeight + game.playSpace.top]);
+      }
+    }
+    var randno = 0;
+    var exit = 0;
+    while(!validSpawn){
+      exit = 0;
+      //pick a random position from the list
+      randno = Math.floor(Math.random() * choices.length);
+      
+      //test validity of position
+      for(var i = 0; i < game.gLevel._tilemap.length; i++){
+        if(game.gLevel._tilemap[i].position.x == choices[randno][0] &&
+           game.gLevel._tilemap[i].position.y == choices[randno][1]){
+          exit = 1;
+        }
+      }
+      if(!exit){
+        validSpawn = 1;
+      }else{
+        choices.splice(randno, 1);
+      }
+    }
+    pellet.put(choices[randno][0], choices[randno][1]);
+
   }
 }
 
