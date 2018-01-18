@@ -1,10 +1,13 @@
 "use strict"
 //pick dimensions divisible by 16
 var Window;
-Window.width = 70 * 8;
-Window.height = 70 * 8;
+  
+PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
+  
 Window.tileHeight = 16;
 Window.tileWidth = 16;
+Window.width = 35 * Window.tileWidth;
+Window.height = 35 * Window.tileHeight;
 var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
 
 
