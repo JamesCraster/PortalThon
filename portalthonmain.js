@@ -51,14 +51,18 @@ function reset(){
 function play(){
   if(game.playerCount == 1){
     if(document.hasFocus()){
-    if(framecount % 12 == 0){
+    if(framecount % 8 == 0){
     player.performLogic();
     }
     if(pellet.collidesWithPlayer()){
       pellet.kill();
       pellet.respawn();
     }
-      framecount ++;
+    if(player._snake.alive == false){
+      pellet.respawn();
+      player.respawn();
+    }
+    framecount ++;
     }
   }
 }

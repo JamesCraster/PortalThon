@@ -1,4 +1,8 @@
 "use strict"
+document.onclick = function(){
+  g.canvas.mozRequestFullScreen()
+}
+
 //pick dimensions divisible by 16
 var Window;
   
@@ -6,8 +10,8 @@ PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
   
 Window.tileHeight = 16;
 Window.tileWidth = 16;
-Window.width = 35 * Window.tileWidth;
-Window.height = 35 * Window.tileHeight;
+Window.width = 50 * Window.tileWidth;
+Window.height = 37 * Window.tileHeight;
 var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf", "player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
 
 
@@ -477,6 +481,9 @@ class Snake{
   get position(){
     return this._head.position;
   }
+  get alive(){
+    return this._alive;
+  }
 }
 
 class Player{
@@ -493,7 +500,9 @@ class Player{
     this._inputs = [Direction.none, Direction.none];
     this.controller.clearAll();
     this._snake.kill();
-    //these coordinates are wrong!!
+    //these coordinates are wrong!!  
+  }
+  respawn(){
     this._snake.respawn(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
     Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);    
   }
