@@ -556,7 +556,7 @@ class Player{
       //collision logic:
       if(collisions.contains("pellet")){
         this.incrementScore();
-        this._snake.addSegment(3);
+        this._snake.addSegment(6);
       }
       if(collisions.contains("segment")||collisions.contains("wall")){
         this.kill();
