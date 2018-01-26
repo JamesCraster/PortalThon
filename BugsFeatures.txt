@@ -12,10 +12,11 @@ make pellet spawn randomly in play area(avoiding segments/heads/portals/pellets)
 make segments always below portals in the render order (Can't do without PIXI rewrite).
 make portals work correctly (Can't do this without PIXI rewrite)
 make look function wrap around edge of play space. DONE
-make pellets double length
+make pellets double length CANCELLED
 death animation
 start animation
 pause animation
 new art style (Priority)
 menu (2nd Priority)
 Pixi rewrite(3rd Priority)
+request fullscreen pollyfill

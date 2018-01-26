@@ -16,13 +16,7 @@ if(game.playerCount == 1){
   var portal6 = new Portal(43 * Window.tileWidth, 24 * Window.tileWidth, "turquoise");
   portal5.link(portal6);
   portal6.link(portal5);
-  var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
-  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);
-  //define scoreText here as it sometimes does not appear otherwise: bug?
-  player._scoreText = g.text("Score:0","32px Arial","red");
-  player._scoreText.resolution = 1;
-  player._scoreText.x = game.playSpace.left;
-  player._scoreText.y = 7;
+  
   var framecount = 0;
   var leftArrow = g.keyboard(65);
   var upArrow = g.keyboard(87);
