@@ -16,7 +16,7 @@ if(game.playerCount == 1){
   var portal6 = new Portal(43 * Window.tileWidth, 24 * Window.tileWidth, "turquoise");
   portal5.link(portal6);
   portal6.link(portal5);
-  
+  Utils.moveAllToBack([portal1, portal2, portal3, portal4, portal5, portal6]);
   var framecount = 0;
   var leftArrow = g.keyboard(65);
   var upArrow = g.keyboard(87);

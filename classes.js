@@ -22,6 +22,15 @@ class Utils{
   static snapYToGrid(y){
     return Math.floor(y/Window.tileHeight)*Window.tileHeight;
   }
+  static moveToBack(entity){
+    g.stage.remove(entity.drawable);
+    g.stage.addChildAt(entity.drawable, 0);
+  }
+  static moveAllToBack(entities){
+    for(var i = 0; i < entities.length; i++){
+      Utils.moveToBack(entities[i]);
+    }
+  }
 }
 class Point{
   constructor(x,y){
