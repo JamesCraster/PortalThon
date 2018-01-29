@@ -14,7 +14,6 @@ Window.width = 50 * Window.tileWidth;
 Window.height = 37 * Window.tileHeight;
 var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf","player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
 
-
 class Utils{
   static snapXToGrid(x){
     return Math.floor(x/Window.tileWidth)*Window.tileWidth;
@@ -579,12 +578,24 @@ class Player{
         this._snake.move();
         if(collisions.contains("portal")){
           this._snake.put(collisions.get("portal").destination.position);
+          //test again for segments, walls and pellets on other side of portal
+          collisions = this._snake.look();
+          if(collisions.contains("segment")||collisions.contains("wall")){
+            this.kill();
+          }else if(collisions.contains("pellet")){
+            this.incrementScore();
+            this._snake.addSegment(6);
+          }
+          //move head one forward
+          this._snake._head.put(this._snake._head.position.x + this._snake._vx * Window.tileWidth,
+             this._snake._head.position.y + this._snake._vy * Window.tileHeight);
+          
         }
       }
       
       //make snake wrap around edges of play space
       this._snake.wrap();
-  }
+    }
   }
 }
 var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
