@@ -303,6 +303,12 @@ class Pellet extends Rectangle{
   constructor(x,y){
     super(x,y,"pellet",Window.tileWidth, Window.tileHeight, "yellow");
   }
+  disappear(){
+    pellet.drawable.visible = false;
+  }
+  reappear(){
+    pellet.drawable.visible = true;
+  }
   respawn(){
     pellet.drawable.visible = true;
     //place pellet within play area

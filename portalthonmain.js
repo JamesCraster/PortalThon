@@ -50,6 +50,12 @@ function reset(){
 function play(){
   if(game.playerCount == 1){
     if(document.hasFocus()){
+    if(framecount % 30 == 0){
+      pellet.reappear();
+    }
+    if(framecount % 60 == 0){
+      pellet.disappear();
+    }
     if(framecount % 8 == 0){
     player.performLogic();
     }
