@@ -591,15 +591,13 @@ var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.w
   Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);
 function setup(){
   g.state = play;
-
-  var globalScoreText = g.text("Score:0","32px PressStart2P","red");
-  
   //define scoreText here as it sometimes does not appear otherwise: bug?
-  player._scoreText = globalScoreText;
+  player._scoreText = g.text("Score:0","32px PressStart2P","red");
   player._scoreText.resolution = 1;
   player._scoreText.x = game.playSpace.left;
   player._scoreText.y = 7;
   //define scoreText here as it sometimes does not appear otherwise: bug?
+  //borders of the playspace
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top + game.playSpace.height + 1
   ,game.playSpace.left + game.playSpace.width, game.playSpace.top + game.playSpace.height + 1);
