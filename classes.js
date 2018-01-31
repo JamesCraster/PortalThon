@@ -584,7 +584,7 @@ class Player{
             this.kill();
           }else if(collisions.contains("pellet")){
             this.incrementScore();
-            this._snake.addSegment(6);
+            this._snake.addSegment(10);
           }
           //move head one forward
           this._snake._head.put(this._snake._head.position.x + this._snake._vx * Window.tileWidth,
