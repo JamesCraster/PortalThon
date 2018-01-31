@@ -1,6 +1,6 @@
 "use strict"
 document.onclick = function(){
-  g.canvas.mozRequestFullScreen()
+  window.focus();
 }
 
 //pick dimensions divisible by 16
