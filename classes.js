@@ -570,7 +570,7 @@ class Player{
       //collision logic:
       if(collisions.contains("pellet")){
         this.incrementScore();
-        this._snake.addSegment(6);
+        this._snake.addSegment(20);
       }
       if(collisions.contains("segment")||collisions.contains("wall")){
         this.kill();
@@ -584,7 +584,7 @@ class Player{
             this.kill();
           }else if(collisions.contains("pellet")){
             this.incrementScore();
-            this._snake.addSegment(10);
+            this._snake.addSegment(20);
           }
           //move head one forward
           this._snake._head.put(this._snake._head.position.x + this._snake._vx * Window.tileWidth,
