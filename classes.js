@@ -1,7 +1,5 @@
 "use strict"
-document.onclick = function(){
-  window.focus();
-}
+
 
 //pick dimensions divisible by 16
 var Window;
@@ -303,13 +301,13 @@ class Pellet extends Rectangle{
     super(x,y,"pellet",Window.tileWidth, Window.tileHeight, "yellow");
   }
   disappear(){
-    pellet.drawable.visible = false;
+    this.drawable.visible = false;
   }
   reappear(){
-    pellet.drawable.visible = true;
+    this.drawable.visible = true;
   }
   respawn(){
-    pellet.drawable.visible = true;
+    this.drawable.visible = true;
     //place pellet within play area
     //pellet.put(Utils.snapXToGrid(Math.floor(Math.random() * (game.playSpace.width - Window.tileWidth))+game.playSpace.left),
     //Utils.snapYToGrid(Math.floor(Math.random() * (game.playSpace.height - Window.tileHeight))+game.playSpace.top));
@@ -344,7 +342,7 @@ class Pellet extends Rectangle{
         choices.splice(randno, 1);
       }
     }
-    pellet.put(choices[randno][0], choices[randno][1]);
+    this.put(choices[randno][0], choices[randno][1]);
 
   }
 }
@@ -598,15 +596,21 @@ class Player{
     }
   }
 }
-var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
-  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);
+var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2) - 1000,
+  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2) - 1000,2);
 function setup(){
   g.state = play;
+  game.menu = true;
   //define scoreText here as it sometimes does not appear otherwise: bug?
   player._scoreText = g.text("Score:0","32px PressStart2P","red");
   player._scoreText.resolution = 1;
   player._scoreText.x = game.playSpace.left;
   player._scoreText.y = 7;
+  player._scoreText.visible = false;
+  
+  game.menuText = g.text("Wormhole", "64px PressStart2P", "red");
+  game.menuText.position.x = Utils.snapXToGrid(140);
+  game.menuText.position.y = Utils.snapYToGrid(148);
   //define scoreText here as it sometimes does not appear otherwise: bug?
   //borders of the playspace
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);
