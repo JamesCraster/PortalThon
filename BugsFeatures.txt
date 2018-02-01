@@ -9,10 +9,9 @@ Features:
 
 make pool resizeable in the event the pool is not large enough: DONE
 make pellet spawn randomly in play area(avoiding segments/heads/portals/pellets). DONE
-make segments always below portals in the render order (Can't do without PIXI rewrite).
-make portals work correctly (Can't do this without PIXI rewrite)
+make segments always below portals in the render order (Can't do without PIXI rewrite). DONE ANYWAY
+make portals work correctly (Can't do this without PIXI rewrite) DONE ANYWAY
 make look function wrap around edge of play space. DONE
-make pellets double length CANCELLED
 death animation
 start animation
 pause animation
@@ -20,3 +19,4 @@ new art style (Priority)
 menu (2nd Priority)
 Pixi rewrite(3rd Priority)
 request fullscreen pollyfill
+multiplayer prototype(Priority)
