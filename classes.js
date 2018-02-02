@@ -512,8 +512,7 @@ class Player{
     this.clearScore();
     this._inputs = [Direction.none, Direction.none];
     this.controller.clearAll();
-    this._snake.kill();
-    //these coordinates are wrong!!  
+    this._snake.kill(); 
   }
   respawn(){
     this._snake.respawn(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
@@ -603,17 +602,13 @@ class Player{
     }
   }
 }
-var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2) - 1000,
-  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2) - 1000,2,0x167311);
+
 function setup(){
   g.state = play;
   game.menu = true;
   //define scoreText here as it sometimes does not appear otherwise: bug?
-  player._scoreText = g.text("Score:0","32px PressStart2P","red");
-  player._scoreText.resolution = 1;
-  player._scoreText.x = game.playSpace.left;
-  player._scoreText.y = 7;
-  player._scoreText.visible = false;
+  game.scoreText = g.text("Score:0", "32px PressStart2P","red");
+  game.scoreText.visible = false;
   
   game.menuText = g.text("Wormhole", "64px PressStart2P", "red");
   game.menuText.position.x = Utils.snapXToGrid(140);

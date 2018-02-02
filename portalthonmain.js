@@ -3,6 +3,7 @@ g.fps = 60;
 g.smoothie.interpolate = false;
 g.start();
 var mousePos = new Point(0,0);
+//get mouse position each frame
 g.canvas.addEventListener('mousemove',function(evt){
   var rect = g.canvas.getBoundingClientRect();
   mousePos._setX(evt.clientX - rect.left);
@@ -15,10 +16,19 @@ function reset(){
 document.onclick = function(){
   window.focus();
   if(game.menu){
+    //if singleplayer text selected
     if(mousePos.x > game.singlePlayerText.position.x &&
-       mousePos.x < game.singlePlayerText.position.x + game.singlePlayerText.width){
+       mousePos.x < game.singlePlayerText.position.x + game.singlePlayerText.width
+       && mousePos.y > game.singlePlayerText.position.y &&
+       mousePos.y < game.singlePlayerText.position.y + game.singlePlayerText.height){
        game.playerCount = 1;
     }
+    if(mousePos.x > game.twoPlayerText.position.x &&
+      mousePos.x < game.twoPlayerText.position.x + game.twoPlayerText.width
+      && mousePos.y > game.twoPlayerText.position.y &&
+      mousePos.y < game.twoPlayerText.position.y + game.twoPlayerText.height){
+      game.playerCount = 2;
+   }
     if(game.playerCount != 0){
       closeMenu();
     }
@@ -41,6 +51,12 @@ function closeMenu(){
   game.twoPlayerText.visible = false;
 }
 function setupOnePlayer(){
+  player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
+  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x167311);
+  player._scoreText = game.scoreText;
+  player._scoreText.resolution = 1;
+  player._scoreText.x = game.playSpace.left;
+  player._scoreText.y = 7;
   portal1 = new Portal(10 * Window.tileWidth, 11 * Window.tileHeight, "magenta");
   portal2 = new Portal(23 * Window.tileWidth, 24 * Window.tileHeight, "magenta");
   portal1.link(portal2);
@@ -77,12 +93,12 @@ function setupOnePlayer(){
   }
   pellet = new Pellet(10 * Window.tileWidth, 5 * Window.tileHeight);
   pellet.kill();
-  player.kill();
-  player.respawn();
   pellet.respawn();
   player._scoreText.visible = true;
 }
 function setupTwoPlayer(){
+  player = new Player(Utils.snapXToGrid(game.playSpace.left + 3*game.playSpace.width/4),
+  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x167311);
   player2 = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/4),
   Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x5f0291);
   portal1 = new Portal(10 * Window.tileWidth, 11 * Window.tileHeight, "magenta");
@@ -141,8 +157,6 @@ function setupTwoPlayer(){
   }
   pellet = new Pellet(10 * Window.tileWidth, 5 * Window.tileHeight);
   pellet.kill();
-  player.kill();
-  player.respawn();
   pellet.respawn();
 }
 function play(){
