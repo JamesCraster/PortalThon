@@ -96,7 +96,7 @@ class Game{
   }
 }
 var game = new Game(Window.tileHeight * 3,Window.tileWidth,Window.width-Window.tileWidth * 2,Window.height-(Window.tileHeight * 3) - Window.tileHeight);
-game.playerCount = 1;
+game.playerCount = 0;
 class Tile{
   constructor(x,y,type){
     this._position = new Point(x,y);
@@ -272,8 +272,8 @@ class Head extends Sprite{
 }
 
 class Segment extends Rectangle{
-  constructor(x,y){
-    super(x,y,"segment",Window.tileWidth,Window.tileHeight,0x167311);
+  constructor(x,y,color){
+    super(x,y,"segment",Window.tileWidth,Window.tileHeight,color);
   }
 }
 
@@ -348,20 +348,21 @@ class Pellet extends Rectangle{
 }
 
 class Snake{
-  constructor(x,y, length){
+  constructor(x,y, length, color){
     this._alive = true;
     this._previousDirection;
     this._body = [];
     this._initialPoolSize = 30;
+    this._color = color;
     //add length segments to the body
     for(var i = 0; i < length; i++){
-      this._body.push(new Segment(-100,-100));
+      this._body.push(new Segment(-100,-100, this._color));
       this._body[this._body.length - 1]._rectangle.visible = false;
     }
     //add initalPoolSize many segments to the pool
     this._pool = [];
     for(var i = 0; i < this._initialPoolSize; i++){
-      this._pool.push(new Segment(-100,-100));
+      this._pool.push(new Segment(-100,-100, this._color));
       this._pool[this._pool.length - 1]._rectangle.visible = false;
     }
     this._head = new Head(x,y);
@@ -384,7 +385,7 @@ class Snake{
   addSegment(number){
     //move 'number' segments from pool to body
     while(number > this._pool.length){
-      this._pool.push(new Segment(-100,-100));
+      this._pool.push(new Segment(-100,-100, this._color));
       this._pool[this._pool.length - 1]._rectangle.visible = false;
     }
     for(var i = 0; i < number; i++){
@@ -499,12 +500,12 @@ class Snake{
 }
 
 class Player{
-  constructor(x,y,length){
+  constructor(x,y,length,color){
     //40px produces no blur
     //32px also produces no blur
     this._score = 0;
     this.controller = new Controller(4);
-    this._snake = new Snake(x,y,length);
+    this._snake = new Snake(x,y,length,color);
     this._inputs = [Direction.none, Direction.none];
   }
   kill(){
@@ -522,7 +523,9 @@ class Player{
     return this._score;
   }
   _setScoreText(string){
-    this._scoreText.text = "Score:" + string;
+    if(this._scoreText){
+      this._scoreText.text = "Score:" + string;
+    }
   }
   clearScore(){
     this._score = 0;
@@ -568,7 +571,9 @@ class Player{
       //collision logic:
       if(collisions.contains("pellet")){
         this.incrementScore();
-        this._snake.addSegment(20);
+        if(game.playerCount == 1){
+          this._snake.addSegment(20);
+        }
       }
       if(collisions.contains("segment")||collisions.contains("wall")){
         this.kill();
@@ -582,7 +587,9 @@ class Player{
             this.kill();
           }else if(collisions.contains("pellet")){
             this.incrementScore();
-            this._snake.addSegment(20);
+            if(game.playerCount == 1){
+              this._snake.addSegment(20);
+            }
           }
           //move head one forward
           this._snake._head.put(this._snake._head.position.x + this._snake._vx * Window.tileWidth,
@@ -597,7 +604,7 @@ class Player{
   }
 }
 var player = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2) - 1000,
-  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2) - 1000,2);
+  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2) - 1000,2,0x167311);
 function setup(){
   g.state = play;
   game.menu = true;
@@ -611,6 +618,12 @@ function setup(){
   game.menuText = g.text("Wormhole", "64px PressStart2P", "red");
   game.menuText.position.x = Utils.snapXToGrid(140);
   game.menuText.position.y = Utils.snapYToGrid(148);
+  game.singlePlayerText = g.text("Singleplayer","32px PressStart2P","red");
+  game.singlePlayerText.position.x = 128;
+  game.singlePlayerText.position.y = 295;
+  game.twoPlayerText = g.text("Two player","32px PressStart2P","red");
+  game.twoPlayerText.position.x = 125;
+  game.twoPlayerText.position.y = 385;
   //define scoreText here as it sometimes does not appear otherwise: bug?
   //borders of the playspace
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);
