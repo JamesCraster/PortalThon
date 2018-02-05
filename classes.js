@@ -10,7 +10,7 @@ Window.tileHeight = 16;
 Window.tileWidth = 16;
 Window.width = 50 * Window.tileWidth;
 Window.height = 37 * Window.tileHeight;
-var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf","player.png", "playerup.png", "playerdown.png", "playerleft.png"]);
+var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf","player.png"]);
 
 class Utils{
   static snapXToGrid(x){
@@ -242,13 +242,16 @@ class Rectangle extends Tile{
 }
 
 class Sprite extends Tile{
-  constructor(x,y,type,textures){
+  constructor(x,y,type,textures, offset){
     super(x,y,type);
     this._sprite = g.sprite(textures);
     this._sprite.position.x = x;
     this._sprite.position.y = y;
     //offset compensates for moving the anchor of the sprite
     this._offset = new Point(0,0);
+    if(offset){
+      this._offset = offset;
+    }
   }
   //moves sprite (the drawable that is visible to the player) into the position
   //dictated by the logic
@@ -270,8 +273,8 @@ class Sprite extends Tile{
 }
 
 class Head extends Sprite{
-  constructor(x,y){
-    super(x,y,"head",["player.png","playerdown.png", "playerleft.png", "playerup.png"]);
+  constructor(x,y,offset){
+    super(x,y,"head",["player.png"],offset);
   }
 }
 
@@ -369,7 +372,9 @@ class Snake{
       this._pool.push(new Segment(-100,-100, this._color));
       this._pool[this._pool.length - 1]._rectangle.visible = false;
     }
-    this._head = new Head(x,y);
+    this._head = new Head(x,y,new Point(8,8));
+    this._head.drawable.anchor.x = 0.5;
+    this._head.drawable.anchor.y = 0.5;
     //set starting direction
     if(direction){
       this.face(direction);
@@ -418,22 +423,22 @@ class Snake{
     if(toFace == Direction.up){
       this._vx = 0;
       this._vy = -1;
-      this._head._sprite.show(3);
+      this._head.drawable.rotation = Math.PI * 3 /2;
     }
     if(toFace == Direction.left){
       this._vx = -1;
       this._vy = 0;
-      this._head._sprite.show(2);
+      this._head.drawable.rotation = Math.PI;
     }
     if(toFace == Direction.down){
       this._vx = 0;
       this._vy = 1;
-      this._head._sprite.show(1);
+      this._head.drawable.rotation = Math.PI * 1/2;
     }
     if(toFace == Direction.right){
       this._vx = 1;
       this._vy = 0;
-      this._head._sprite.show(0);
+      this._head.drawable.rotation = 0;
     }
   }
   wrap(){
@@ -453,8 +458,11 @@ class Snake{
     this.translate(this._vx * Window.tileWidth,this._vy * Window.tileHeight);
     this.wrap();
     var collidedWith = new Level([]);
+    var adjustedPosition = new Point(0,0);
+    adjustedPosition._setX(this._head._sprite.position.x - this._head._offset.x);
+    adjustedPosition._setY(this._head._sprite.position.y - this._head._offset.y);
     for(var i = 0; i < game.gLevel._tilemap.length; i++){
-      if(this._head._sprite.position.equals(game.gLevel._tilemap[i].position)){
+      if(adjustedPosition.equals(game.gLevel._tilemap[i].position)){
         collidedWith.push(game.gLevel._tilemap[i]);
       }
     }
@@ -600,11 +608,9 @@ class Player{
           }
           //move head one forward
           this._snake._head.put(this._snake._head.position.x + this._snake._vx * Window.tileWidth,
-             this._snake._head.position.y + this._snake._vy * Window.tileHeight);
-          
+             this._snake._head.position.y + this._snake._vy * Window.tileHeight);   
         }
       }
-      
       //make snake wrap around edges of play space
       this._snake.wrap();
     }
