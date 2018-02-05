@@ -205,12 +205,14 @@ class Rectangle extends Tile{
     this._rectangle = g.rectangle(width,height,color);
     this._rectangle.position.x = x;
     this._rectangle.position.y = y;
+    //offset compensates for moving the anchor of the rectangle
+    this._offset = new Point(0,0);
   }
   //moves rectangle (the drawable that is visible to the player) into the position
   //dictated by the logic
   _updateRectanglePosition(){
-    this._rectangle.position.x = this.position.x;
-    this._rectangle.position.y = this.position.y;
+    this._rectangle.position.x = this.position.x + this._offset.x;
+    this._rectangle.position.y = this.position.y + this._offset.y;
   }
   put(x,y){
     if(typeof y != 'undefined'){
@@ -245,12 +247,14 @@ class Sprite extends Tile{
     this._sprite = g.sprite(textures);
     this._sprite.position.x = x;
     this._sprite.position.y = y;
+    //offset compensates for moving the anchor of the sprite
+    this._offset = new Point(0,0);
   }
   //moves sprite (the drawable that is visible to the player) into the position
   //dictated by the logic
   _updateSpritePosition(){
-    this._sprite.position.x = this.position.x;
-    this._sprite.position.y = this.position.y;
+    this._sprite.position.x = this.position.x + this._offset.x;
+    this._sprite.position.y = this.position.y + this._offset.y;
   }
   put(x,y){
     if(typeof y != 'undefined'){
@@ -348,7 +352,7 @@ class Pellet extends Rectangle{
 }
 
 class Snake{
-  constructor(x,y, length, color){
+  constructor(x,y, length, color, direction){
     this._alive = true;
     this._previousDirection;
     this._body = [];
@@ -366,8 +370,12 @@ class Snake{
       this._pool[this._pool.length - 1]._rectangle.visible = false;
     }
     this._head = new Head(x,y);
-    this._vx = 1;
-    this._vy = 0;
+    //set starting direction
+    if(direction){
+      this.face(direction);
+    }else{
+      this.face(Direction.right);
+    }
   }
   get alive(){
     return this._alive;
@@ -500,12 +508,12 @@ class Snake{
 }
 
 class Player{
-  constructor(x,y,length,color){
+  constructor(x,y,length,color,direction){
     //40px produces no blur
     //32px also produces no blur
     this._score = 0;
     this.controller = new Controller(4);
-    this._snake = new Snake(x,y,length,color);
+    this._snake = new Snake(x,y,length,color,direction);
     this._inputs = [Direction.none, Direction.none];
   }
   kill(){

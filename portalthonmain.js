@@ -98,9 +98,9 @@ function setupOnePlayer(){
 }
 function setupTwoPlayer(){
   player = new Player(Utils.snapXToGrid(game.playSpace.left + 3*game.playSpace.width/4),
-  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x167311);
+  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x167311, Direction.left);
   player2 = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/4),
-  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x5f0291);
+  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x5f0291, Direction.right);
   portal1 = new Portal(10 * Window.tileWidth, 11 * Window.tileHeight, "magenta");
   portal2 = new Portal(23 * Window.tileWidth, 24 * Window.tileHeight, "magenta");
   portal1.link(portal2);
