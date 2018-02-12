@@ -95,12 +95,28 @@ function setupOnePlayer(){
   pellet.kill();
   pellet.respawn();
   player._scoreText.visible = true;
+  g.state = countDown;
+  game.startTime = Date.now();
+}
+function countDown(){
+  game.countdownText.visible = true;
+  if((Date.now() - game.startTime)/1000 > 0.5){
+    game.countdownText.text = (3-Math.floor((Date.now() - game.startTime)/1000)).toString();
+  }
+  if(3-Math.floor((Date.now() - game.startTime)/1000) <= 0){
+    game.countdownText.text = "GO!";
+  }
+  if(3-Math.floor((Date.now() - game.startTime)/1000) < -0.5){
+    game.countdownText.visible = false;
+    g.state = play;
+  }
+
 }
 function setupTwoPlayer(){
   player = new Player(Utils.snapXToGrid(game.playSpace.left + 3*game.playSpace.width/4),
   Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x167311, Direction.left);
   player2 = new Player(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/4),
-  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x5f0291, Direction.right);
+  Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2,0x5f0291, Direction.right,"player2.png");
   portal1 = new Portal(10 * Window.tileWidth, 11 * Window.tileHeight, "magenta");
   portal2 = new Portal(23 * Window.tileWidth, 24 * Window.tileHeight, "magenta");
   portal1.link(portal2);
@@ -158,6 +174,8 @@ function setupTwoPlayer(){
   pellet = new Pellet(10 * Window.tileWidth, 5 * Window.tileHeight);
   pellet.kill();
   pellet.respawn();
+  game.startTime = Date.now();
+  g.state = countDown;
 }
 function play(){
   if(game.menu){
@@ -170,53 +188,55 @@ function play(){
 function gameLoop(){
   if(game.playerCount == 1){
     if(document.hasFocus()){
-    if(game.framecount % 30 == 0){
-      pellet.reappear();
-    }
-    if(game.framecount % 60 == 0){
-      pellet.disappear();
-    }
-    if(game.framecount % 8 == 0){
-      player.performLogic();
-    }
-    if(pellet.collidesWithPlayer()){
-      pellet.kill();
-      pellet.respawn();
-    }
-    if(player._snake.alive == false){
-      pellet.respawn();
-      player.respawn();
-    }
-    game.framecount ++;
+      if(game.framecount % 30 == 0){
+        pellet.reappear();
+      }
+      if(game.framecount % 60 == 0){
+        pellet.disappear();
+      }
+      if(game.framecount % player.framecount == 0){
+        player.performLogic();
+      }
+      if(pellet.collidesWithPlayer()){
+        pellet.kill();
+        pellet.respawn();
+      }
+      if(player._snake.alive == false){
+        pellet.respawn();
+        player.respawn();
+      }
+      game.framecount ++;
     }
   }
   if(game.playerCount == 2){
     if(document.hasFocus()){
-    if(game.framecount % 30 == 0){
-      pellet.reappear();
-    }
-    if(game.framecount % 60 == 0){
-      pellet.disappear();
-    }
-    if(game.framecount % 15 == 0){
-      player._snake.addSegment(1);
-      player2._snake.addSegment(1);
-    }
-    if(game.framecount % 8 == 0){
-      player.performLogic();
-      player2.performLogic();
-    }
-    if(pellet.collidesWithPlayer()){
-      pellet.kill();
-      pellet.respawn();
-    }
-    if(player._snake.alive == false){
-     // player.respawn();
-    }
-    if(player2._snake.alive == false){
-     // player2.respawn();
-    }
-    game.framecount ++;
+      if(game.framecount % 30 == 0){
+        pellet.reappear();
+      }
+      if(game.framecount % 60 == 0){
+        pellet.disappear();
+      }
+      if(game.framecount % 15 == 0){
+        player._snake.addSegment(1);
+        player2._snake.addSegment(1);
+      }
+      if(game.framecount % player.framecount == 0){
+        player.performLogic();
+      }
+      if(game.framecount % player2.framecount == 0){
+        player2.performLogic();
+      }
+      if(pellet.collidesWithPlayer()){
+        pellet.kill();
+        pellet.respawn();
+      }
+      if(player._snake.alive == false){
+        game.player2WinText.visible = true;
+      }
+      if(player2._snake.alive == false){
+        game.player1WinText.visible = true;
+      }
+      game.framecount ++;
     }
   }
 }

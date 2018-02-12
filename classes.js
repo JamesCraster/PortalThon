@@ -5,13 +5,12 @@
 var Window;
   
 PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
-  
 Window.tileHeight = 16;
 Window.tileWidth = 16;
 Window.width = 50 * Window.tileWidth;
 Window.height = 37 * Window.tileHeight;
 var g = hexi(Window.width, Window.height, setup, ["Fonts/PressStart2P.ttf","player.png"]);
-
+g.renderer.resolution = 2;
 class Utils{
   static snapXToGrid(x){
     return Math.floor(x/Window.tileWidth)*Window.tileWidth;
@@ -207,6 +206,8 @@ class Rectangle extends Tile{
     this._rectangle.position.y = y;
     //offset compensates for moving the anchor of the rectangle
     this._offset = new Point(0,0);
+    //move rectangle into correct position;
+    this._updateRectanglePosition();
   }
   //moves rectangle (the drawable that is visible to the player) into the position
   //dictated by the logic
@@ -252,6 +253,8 @@ class Sprite extends Tile{
     if(offset){
       this._offset = offset;
     }
+    //move sprite into correct position
+    this._updateSpritePosition();
   }
   //moves sprite (the drawable that is visible to the player) into the position
   //dictated by the logic
@@ -273,8 +276,12 @@ class Sprite extends Tile{
 }
 
 class Head extends Sprite{
-  constructor(x,y,offset){
-    super(x,y,"head",["player.png"],offset);
+  constructor(x,y,offset,sprite){
+    if(sprite == undefined){
+      super(x,y,"head",["player.png"],offset);
+    }else{
+      super(x,y,"head",[sprite],offset);
+    }
   }
 }
 
@@ -355,12 +362,13 @@ class Pellet extends Rectangle{
 }
 
 class Snake{
-  constructor(x,y, length, color, direction){
+  constructor(x,y, length, color, direction, sprite){
     this._alive = true;
     this._previousDirection;
     this._body = [];
     this._initialPoolSize = 30;
     this._color = color;
+    this._framecount = 6;
     //add length segments to the body
     for(var i = 0; i < length; i++){
       this._body.push(new Segment(-100,-100, this._color));
@@ -372,7 +380,11 @@ class Snake{
       this._pool.push(new Segment(-100,-100, this._color));
       this._pool[this._pool.length - 1]._rectangle.visible = false;
     }
-    this._head = new Head(x,y,new Point(8,8));
+    if(sprite == undefined){
+      this._head = new Head(x,y,new Point(8,8));
+    }else{
+      this._head = new Head(x,y,new Point(8,8), sprite);
+    }
     this._head.drawable.anchor.x = 0.5;
     this._head.drawable.anchor.y = 0.5;
     //set starting direction
@@ -384,6 +396,9 @@ class Snake{
   }
   get alive(){
     return this._alive;
+  }
+  get framecount(){
+    return this._framecount;
   }
   move(){
     //move last segment to head and make visible
@@ -516,12 +531,12 @@ class Snake{
 }
 
 class Player{
-  constructor(x,y,length,color,direction){
+  constructor(x,y,length,color,direction,sprite){
     //40px produces no blur
     //32px also produces no blur
     this._score = 0;
     this.controller = new Controller(4);
-    this._snake = new Snake(x,y,length,color,direction);
+    this._snake = new Snake(x,y,length,color,direction,sprite);
     this._inputs = [Direction.none, Direction.none];
   }
   kill(){
@@ -529,6 +544,9 @@ class Player{
     this._inputs = [Direction.none, Direction.none];
     this.controller.clearAll();
     this._snake.kill(); 
+  }
+  get framecount(){
+    return this._snake.framecount;
   }
   respawn(){
     this._snake.respawn(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
@@ -623,16 +641,37 @@ function setup(){
   //define scoreText here as it sometimes does not appear otherwise: bug?
   game.scoreText = g.text("Score:0", "32px PressStart2P","red");
   game.scoreText.visible = false;
+  game.scoreText.resolution = 4;
   
   game.menuText = g.text("Wormhole", "64px PressStart2P", "red");
   game.menuText.position.x = Utils.snapXToGrid(140);
   game.menuText.position.y = Utils.snapYToGrid(148);
+  game.menuText.resolution = 4;
   game.singlePlayerText = g.text("Singleplayer","32px PressStart2P","red");
   game.singlePlayerText.position.x = 128;
   game.singlePlayerText.position.y = 295;
+  game.singlePlayerText.resolution = 4;
   game.twoPlayerText = g.text("Two player","32px PressStart2P","red");
   game.twoPlayerText.position.x = 125;
   game.twoPlayerText.position.y = 385;
+  game.twoPlayerText.resolution = 4;
+  game.player1WinText = g.text("Player 1 wins!", "32px PressStart2P","green");
+  game.player1WinText.visible = false;
+  game.player1WinText.position.x = 172;
+  game.player1WinText.position.y = 7;
+  game.player1WinText.resolution = 4;
+  game.player2WinText = g.text("Player 2 wins!", "32px PressStart2P","purple");
+  game.player2WinText.visible = false;
+  game.player2WinText.position.x = 172;
+  game.player2WinText.position.y = 7;
+  game.player2WinText.resolution = 4;
+  game.countdownText = g.text("3", "40px PressStart2P", "red");
+  game.countdownText.visible = false;
+  game.countdownText.position.x = 370;
+  game.countdownText.position.y = 230;
+  game.countdownText.resolution = 4;
+
+
   //define scoreText here as it sometimes does not appear otherwise: bug?
   //borders of the playspace
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);
