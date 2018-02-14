@@ -100,6 +100,9 @@ function setupOnePlayer(){
 }
 function countDown(){
   game.countdownText.visible = true;
+  if((Date.now() - game.startTime)/1000 < 0.5){
+    game.countdownText.text = "";
+  }
   if((Date.now() - game.startTime)/1000 > 0.5){
     game.countdownText.text = (3-Math.floor((Date.now() - game.startTime)/1000)).toString();
   }
@@ -177,12 +180,26 @@ function setupTwoPlayer(){
   game.startTime = Date.now();
   g.state = countDown;
 }
+function twoPlayerReset(){
+  if((Date.now() - game.playerDeadStart)/1000 > 2){
+    player.kill();
+    player.respawn();
+    player2.kill();
+    player2.respawn();
+    pellet.kill();
+    pellet.respawn();
+    g.state = countDown;
+    game.startTime = Date.now();
+    game.player1WinText.visible = false;
+    game.player2WinText.visible = false;
+  }
+}
+
 function play(){
   if(game.menu){
     menu();
   }else{
     gameLoop();
-    
   }
 }
 function gameLoop(){
@@ -232,9 +249,13 @@ function gameLoop(){
       }
       if(player._snake.alive == false){
         game.player2WinText.visible = true;
+        game.playerDeadStart = Date.now();
+        g.state = twoPlayerReset;
       }
       if(player2._snake.alive == false){
         game.player1WinText.visible = true;
+        game.playerDeadStart = Date.now();
+        g.state = twoPlayerReset;
       }
       game.framecount ++;
     }

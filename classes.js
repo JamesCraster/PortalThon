@@ -499,9 +499,12 @@ class Snake{
     this.clearSegments()
     this._alive = false;
   }
-  respawn(x,y,segments){
+  respawn(x,y,segments, direction){
     this.put(x,y);
-    this.face(Direction.right);
+    if(direction == undefined){
+      direction = Direction.right;
+    }
+    this.face(direction);
     this.addSegment(segments);
     this._alive = true;
   }
@@ -538,6 +541,8 @@ class Player{
     this.controller = new Controller(4);
     this._snake = new Snake(x,y,length,color,direction,sprite);
     this._inputs = [Direction.none, Direction.none];
+    this._respawnPosition = new Point(x, y);
+    this._startDirection = direction;
   }
   kill(){
     this.clearScore();
@@ -549,8 +554,10 @@ class Player{
     return this._snake.framecount;
   }
   respawn(){
-    this._snake.respawn(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
-    Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);    
+   // this._snake.respawn(Utils.snapXToGrid(game.playSpace.left + game.playSpace.width/2),
+   // Utils.snapYToGrid(game.playSpace.top + game.playSpace.height/2),2);    
+      this._snake.respawn(this._respawnPosition.x, this._respawnPosition.y,2, this._startDirection);
+
   }
   get score(){
     return this._score;
