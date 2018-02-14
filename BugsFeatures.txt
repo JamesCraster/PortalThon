@@ -21,3 +21,6 @@ Pixi rewrite(3rd Priority)
 request fullscreen pollyfill
 multiplayer prototype(Priority) DONE
 make game pause when focus lost, even during countdown/reset function calls!
+make portals line up
+make player2's head be the same color as its body
+make the countdown text not change position from '1' to 'GO!'
