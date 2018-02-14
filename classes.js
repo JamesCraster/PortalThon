@@ -516,7 +516,8 @@ class Snake{
   }
   kill(){
     //move head but not head sprite as head sprite needs to undergo death animation
-    this._head.putLogical(-100,-100);
+    //this._head.putLogical(-100,-100);
+    this._head.put(-100,-100);
     this._vx = 0;
     this._vy = 0;
     this.clearSegments()
