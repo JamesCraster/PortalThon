@@ -678,7 +678,7 @@ function setup(){
   game.countdownText.position.y = 230;
   game.countdownText.resolution = 4;
 
-
+  game.shortened = 0;
   //define scoreText here as it sometimes does not appear otherwise: bug?
   //borders of the playspace
   var line = g.line("red",3,game.playSpace.left,game.playSpace.top-2,game.playSpace.left + game.playSpace.width,game.playSpace.top-2);

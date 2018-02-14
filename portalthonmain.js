@@ -98,12 +98,19 @@ function setupOnePlayer(){
   g.state = countDown;
   game.startTime = Date.now();
 }
-function countDown(){
+function countDown(shortened){
   game.countdownText.visible = true;
-  if((Date.now() - game.startTime)/1000 < 0.5){
+  var initialWait = 0.5;
+  pellet.kill();
+  game.framecount = 0;
+  //jump right to display 3 (no pause)
+  if(game.shortened){
+    initialWait = 0;
+  }
+  if((Date.now() - game.startTime)/1000 < initialWait){
     game.countdownText.text = "";
   }
-  if((Date.now() - game.startTime)/1000 > 0.5){
+  if((Date.now() - game.startTime)/1000 > initialWait){
     game.countdownText.text = (3-Math.floor((Date.now() - game.startTime)/1000)).toString();
   }
   if(3-Math.floor((Date.now() - game.startTime)/1000) <= 0){
@@ -112,6 +119,8 @@ function countDown(){
   if(3-Math.floor((Date.now() - game.startTime)/1000) < -0.5){
     game.countdownText.visible = false;
     g.state = play;
+    pellet.kill();
+    pellet.respawn();
   }
 
 }
@@ -180,15 +189,24 @@ function setupTwoPlayer(){
   game.startTime = Date.now();
   g.state = countDown;
 }
+function onePlayerReset(){
+  if((Date.now() - game.playerDeadStart)/1000 > 0.5){
+    player.kill();
+    player.respawn();
+    g.state = countDown;
+    game.shortened = 1;
+    game.startTime = Date.now();
+  }
+}
 function twoPlayerReset(){
+  pellet.kill();
   if((Date.now() - game.playerDeadStart)/1000 > 2){
     player.kill();
     player.respawn();
     player2.kill();
     player2.respawn();
-    pellet.kill();
-    pellet.respawn();
     g.state = countDown;
+    game.shortened = 1;
     game.startTime = Date.now();
     game.player1WinText.visible = false;
     game.player2WinText.visible = false;
@@ -219,8 +237,9 @@ function gameLoop(){
         pellet.respawn();
       }
       if(player._snake.alive == false){
-        pellet.respawn();
-        player.respawn();
+        pellet.kill();
+       game.playerDeadStart = Date.now();
+       g.state = onePlayerReset;
       }
       game.framecount ++;
     }
