@@ -45,9 +45,14 @@ class Point{
   _setY(y){
     this._y = y;
   }
-  _set(point){
-    this._x = point.x;
-    this._y = point.y;
+  _set(point,y){
+    if(point instanceof Point){
+      this._x = point.x;
+      this._y = point.y;
+    }else{
+       this._x = point;
+       this._y = y;
+    }
   }
   equals(other){
     return this.x == other.x && this.y == other.y;
@@ -74,6 +79,19 @@ class Level{
     for(var i = 0; i < this._tilemap.length; i++){
       if(this._tilemap[i].type == type){
         return true;
+      }
+    }
+    return false;
+  }
+  //returns true if contains at least 'number' of 'type'
+  containsCount(type,number){
+    var count = 0;
+    for(var i = 0; i < this._tilemap.length; i++){
+      if(this._tilemap[i].type == type){
+        count += 1;
+        if(count == number){
+          return true;
+        }
       }
     }
     return false;
@@ -272,6 +290,10 @@ class Sprite extends Tile{
   }
   get drawable(){
     return this._sprite;
+  }
+  //only move the logical position and not the sprite (useful for death animation)
+  putLogical(x,y){
+    this._position._set(x,y);
   }
 }
 
@@ -493,13 +515,15 @@ class Snake{
     this._head.put(this._head.position.x + x, this._head.position.y + y);
   }
   kill(){
-    this.put(-100,-100);
+    //move head but not head sprite as head sprite needs to undergo death animation
+    this._head.putLogical(-100,-100);
     this._vx = 0;
     this._vy = 0;
     this.clearSegments()
     this._alive = false;
   }
   respawn(x,y,segments, direction){
+    this.reappear();
     this.put(x,y);
     if(direction == undefined){
       direction = Direction.right;
@@ -530,6 +554,12 @@ class Snake{
   }
   get alive(){
     return this._alive;
+  }
+  disappear(){
+    this._head.drawable.visible = false;
+  }
+  reappear(){
+    this._head.drawable.visible = true;
   }
 }
 
@@ -615,7 +645,7 @@ class Player{
           this._snake.addSegment(20);
         }
       }
-      if(collisions.contains("segment")||collisions.contains("wall")){
+      if(collisions.contains("segment")||collisions.contains("wall")||collisions.containsCount("head",2)){
         this.kill();
       }else{
         this._snake.move();
@@ -623,7 +653,7 @@ class Player{
           this._snake.put(collisions.get("portal").destination.position);
           //test again for segments, walls and pellets on other side of portal
           collisions = this._snake.look();
-          if(collisions.contains("segment")||collisions.contains("wall")){
+          if(collisions.contains("segment")||collisions.contains("wall")||collisions.containsCount("head",2)){
             this.kill();
           }else if(collisions.contains("pellet")){
             this.incrementScore();

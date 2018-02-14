@@ -200,6 +200,13 @@ function onePlayerReset(){
 }
 function twoPlayerReset(){
   pellet.kill();
+  //Try to add death animation for players!
+  //if(Math.floor(Date.now() - game.playerDeadStart)% 2 == 0){
+    //player._snake.disappear();
+  //}
+  //if(Math.floor(Date.now() - game.playerDeadStart)% 4 == 0){
+    //player._snake.reappear();
+  //}
   if((Date.now() - game.playerDeadStart)/1000 > 2){
     player.kill();
     player.respawn();
@@ -237,7 +244,7 @@ function gameLoop(){
         pellet.respawn();
       }
       if(player._snake.alive == false){
-        pellet.kill();
+       pellet.kill();
        game.playerDeadStart = Date.now();
        g.state = onePlayerReset;
       }

@@ -13,10 +13,11 @@ make segments always below portals in the render order (Can't do without PIXI re
 make portals work correctly (Can't do this without PIXI rewrite) DONE ANYWAY
 make look function wrap around edge of play space. DONE
 death animation
-start animation
-pause animation
+start animation DONE 
+pause animation 
 new art style (Priority)
-menu (2nd Priority)
+menu (2nd Priority) YES (although looks ugly)
 Pixi rewrite(3rd Priority)
 request fullscreen pollyfill
-multiplayer prototype(Priority)
+multiplayer prototype(Priority) DONE
+make game pause when focus lost, even during countdown/reset function calls!
